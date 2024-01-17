@@ -26,7 +26,11 @@ model Exercise {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name String @unique
+  name        String @unique
+  video       String
+  description String
+
+  templates Template[]
 }
 
 model Template {
@@ -34,9 +38,10 @@ model Template {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  assignments Assignment[]
+  exercises Exercise[]
 
-  name String @unique
+  name       String       @unique
+  Assignment Assignment[]
 }
 
 model Assignment {
