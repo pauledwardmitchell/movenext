@@ -1,5 +1,20 @@
 const createURL = (path) => window.location.origin + path
 
+export const createNewAssignment = async ( userData ) => {
+  const res = await fetch(
+    new Request(createURL('/api/assignment'), {
+      method: 'POST',
+      body: JSON.stringify(userData),
+    })
+  )
+
+  if (res.ok) {
+    return res.json()
+  } else {
+    throw new Error('Something went wrong on API server!')
+  }
+}
+
 export const createNewTemplate = async ( data ) => {
   const res = await fetch(
     new Request(createURL('/api/template'), {
