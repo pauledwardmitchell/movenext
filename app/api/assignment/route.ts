@@ -8,7 +8,7 @@ export const POST = async ( request: Request ) => {
 			name: Date.now().toString(),
 			user: {
 				connect: {
-					email: data.userEmail,
+					id: data.userId,
 				},
 			},
 			template: {
