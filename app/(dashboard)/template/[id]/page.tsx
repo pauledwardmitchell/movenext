@@ -44,7 +44,7 @@ const TemplatePage = async ( {params} ) => {
     		    </ul>
     		    <div>
     		      <div className="w-72">
-    		        <UserSelect users={userSelectOptions} params={params} />
+    		        <UserSelect users={userSelectOptions} params={params} templateName={template.name} />
                   </div>
     		    </div>
 		   </div>)
