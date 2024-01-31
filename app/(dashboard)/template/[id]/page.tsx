@@ -33,8 +33,6 @@ const getUserSelectOptions = async () => {
 	return userSelectOptions
 }
 
-//pass in data like the select needs with value and id
-
 const TemplatePage = async ( {params} ) => {
 	const template = await getTemplate(params.id)
 	const userSelectOptions = await getUserSelectOptions()

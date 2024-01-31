@@ -43,8 +43,6 @@ const UserSelect = ( {params, users} ) => {
 	    	  	))}
 	    	</Select>
 	    	<Button onClick={handleOnClick}>Assign</Button>
-	    	<Button onClick={findUserIdFromEmail}>Assign</Button>
-
     	</div>
 	)
 }
