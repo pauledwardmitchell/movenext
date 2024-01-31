@@ -3,9 +3,10 @@ import { NextResponse } from "next/server"
 
 export const POST = async ( request: Request ) => {
 	const data = await request.json()
+	
 	const assignment = await prisma.assignment.create({
 		data: {
-			name: Date.now().toString(),
+			name: data.name,
 			user: {
 				connect: {
 					id: data.userId,

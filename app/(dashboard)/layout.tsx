@@ -4,7 +4,8 @@ import Link from 'next/link'
 const links = [
   { name: 'Build Template', href: '/buildtemplate' },
   { name: 'Create Exercise', href: '/newexercise' },
-  { name: 'All Exercises', href: '/allexercises' }
+  { name: 'All Exercises', href: '/allexercises' },
+  { name: 'All Templates', href: '/alltemplates'}
 ]
 
 const DashboardLayout = ({ children }) => {

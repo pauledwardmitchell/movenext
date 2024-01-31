@@ -2,14 +2,16 @@
 
 import { useState } from 'react'
 import { createNewTemplate } from '@/utils/api'
-// import { revalidatePath } from 'next/cache'
 import { useRouter } from 'next/navigation'
+
+import { Input } from "@material-tailwind/react"
 
 const TemplateForm =  ( {exercises} ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
   const [programName, setProgramName] = useState("")
   const [templateExercises, setTemplateExercises] = useState([])
+  const [templateName, setTemplateName] = useState("")
 
   const search = (exercises) => {
 		return exercises.filter((item) => item.name.toLowerCase().includes(query))
@@ -17,9 +19,13 @@ const TemplateForm =  ( {exercises} ) => {
 
   const router = useRouter()
 
+  const templateData = {
+    name: templateName,
+    exercises: templateExercises
+  }
+
   const handleTemplateSubmit = async () => {
-  	console.log("templateExercises ", templateExercises)
-    const { data } = await createNewTemplate( templateExercises )
+    const { data } = await createNewTemplate( templateData )
     router.push(`/template/${data.id}`)
   }
 
@@ -42,6 +48,7 @@ const TemplateForm =  ( {exercises} ) => {
           </ul>
 	    <div className="h-[500px]cursor-pointer overflow-hidden rounded-lg bg-white shadow">
 	      <div className="px-4 py-5 sm:p-6">
+	      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)}></Input>
 	        <ul>
     		  {templateExercises.map(exercise => (
     			<li key={exercise.id}>{exercise.name}</li>))}

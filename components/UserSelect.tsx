@@ -8,14 +8,29 @@ import { createNewAssignment } from '@/utils/api'
 import { Button, Select, Option } from "@material-tailwind/react"
 
 
-const UserSelect = ( {params, users} ) => {
+const UserSelect = ( {params, users, templateName} ) => {
 	const [name, setName] = useState("")
 
+	const formattedName = () => {
+		const date = new Date()
+		const options = { weekday: 'long',
+						  year: 'numeric',
+						  month: 'long',
+						  day: 'numeric',
+						  hour: '2-digit',
+						  minute: '2-digit',
+						  seccond: '2-digit'
+		}
+		const formattedDate = date.toLocaleDateString("en-US", options)
+		const name = templateName + ": assigned on " + formattedDate
+		console.log('name', name)
+		return name
+	}
+	
 	const router = useRouter()
 
 	const findUserIdFromEmail = () => {
 		let id 
-		console.log('users', users)
 		for (let i = 0; i < users.length; i++) {
 			if (users[i].value == name) {
 				id = users[i].id
@@ -27,7 +42,8 @@ const UserSelect = ( {params, users} ) => {
 
 	const userData = {
 		userId: findUserIdFromEmail(),
-		templateId: params.id
+		templateId: params.id,
+		name: formattedName()
 	}
 
 	const handleOnClick = async () => {
@@ -43,8 +59,6 @@ const UserSelect = ( {params, users} ) => {
 	    	  	))}
 	    	</Select>
 	    	<Button onClick={handleOnClick}>Assign</Button>
-	    	<Button onClick={findUserIdFromEmail}>Assign</Button>
-
     	</div>
 	)
 }

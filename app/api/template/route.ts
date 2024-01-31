@@ -6,9 +6,9 @@ export const POST = async ( request: Request ) => {
 
 	const template = await prisma.template.create({
 		data: {
-			name: "Template Name 4",
+			name: data.name,
 			exercises: {
-				connect: data
+				connect: data.exercises
 			}
 		}
 	})
