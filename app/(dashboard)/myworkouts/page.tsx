@@ -1,25 +1,42 @@
 import { prisma } from "@/utils/db"
 import { getUserFromClerkID } from '@/utils/auth'
 
-const getWorkouts = async () => {
+import Link from "next/link"
+
+const getAssignments = async () => {
 	const user = await getUserFromClerkID()
-	const workouts = await prisma.assignment.findMany({
+	const assignments = await prisma.assignment.findMany({
 	    where: {
 	      userId: user.id,
 	    },
 	    orderBy: {
 	      createdAt: 'desc',
+	    },
+	    include: {
+	    	template: true
 	    }
 	})
 
-	return workouts
+	return assignments
 }
 
 
 const MyWorkoutsPage = async () => {
-	const workouts = await getWorkouts()
-	console.log('workouts', workouts)
-	return <div>my workouts here</div>
+	const assignments = await getAssignments()
+	return (
+		<div>
+			<div>my workouts here</div>
+			<ul>
+				{assignments.map(assignment => (
+					
+	    				<li key={assignment.id}>
+	    					<Link href={`/assignment/${assignment.id}`} key={assignment.id}>{assignment.template.name} {assignment.name}</Link>
+	    				</li>
+	    			))}
+			</ul>
+		</div>
+
+	)
 }
 
 export default MyWorkoutsPage

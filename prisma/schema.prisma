@@ -18,7 +18,14 @@ model User {
   clerkId   String   @unique
   email     String   @unique
 
+  role UserRole @default(USER)
+
   assignments Assignment[]
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }
 
 model Exercise {
