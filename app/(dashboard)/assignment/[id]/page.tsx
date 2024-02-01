@@ -15,7 +15,6 @@ const getAssignment = async (id) => {
 	    	}
 	    }
 	})
-	console.log("assignment ", assignment)
 	return assignment
 }
 
