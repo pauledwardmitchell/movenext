@@ -18,12 +18,14 @@ const userAssignments = ( user ) => {
 	if (user.assignments.length > 0) {
 		return (
 			<div>
+				<ul>
 				{user.assignments.map(assignment => (
-					<ul>
+					
 	    				<li key={assignment.id}>
 	    					<Link href={`/assignment/${assignment.id}`} key={assignment.id}>{assignment.template} {assignment.name}</Link>
 	    				</li>
-	    			</ul>))}
+	    			))}
+				</ul>
 				<Link href="/alltemplates">Assign another Template to this Athlete</Link>
 			</div>
 		)

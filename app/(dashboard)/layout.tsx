@@ -5,7 +5,9 @@ const links = [
   { name: 'Build Template', href: '/buildtemplate' },
   { name: 'Create Exercise', href: '/newexercise' },
   { name: 'All Exercises', href: '/allexercises' },
-  { name: 'All Templates', href: '/alltemplates'}
+  { name: 'All Templates', href: '/alltemplates' },
+  { name: 'My Patients', href: '/mypatients' },
+  {name: 'My Workouts', href: '/myworkouts' }
 ]
 
 const DashboardLayout = ({ children }) => {

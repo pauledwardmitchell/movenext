@@ -1,5 +1,4 @@
 import { prisma } from "@/utils/db"
-import NewTemplateForm from "@/components/NewTemplateForm"
 import TemplateForm from "@/components/TemplateForm"
 
 
