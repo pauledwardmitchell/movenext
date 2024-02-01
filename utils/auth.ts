@@ -7,7 +7,6 @@ export const getUserFromClerkID = async (select = { id: true }) => {
     where: {
       clerkId: userId as string,
     },
-    select,
   })
 
   return user

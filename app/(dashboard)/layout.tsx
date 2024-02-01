@@ -1,16 +1,29 @@
 import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 
-const links = [
+import { getUserFromClerkID } from '@/utils/auth'
+
+const user = await getUserFromClerkID()
+
+const adminLinks = [
   { name: 'Build Template', href: '/buildtemplate' },
   { name: 'Create Exercise', href: '/newexercise' },
   { name: 'All Exercises', href: '/allexercises' },
   { name: 'All Templates', href: '/alltemplates' },
   { name: 'My Patients', href: '/mypatients' },
+  { name: 'My Workouts', href: '/myworkouts' }
+]
+
+const userLinks = [
   {name: 'My Workouts', href: '/myworkouts' }
 ]
 
+// const links = (user) => {
+//   console.log('user role ', user.role)
+// }
+
 const DashboardLayout = ({ children }) => {
+  
   return (
     <div className="w-screen h-screen relative">
       <aside className="absolute left-0 top-0 h-full w-[200px] border-r border-black/10">
@@ -19,7 +32,7 @@ const DashboardLayout = ({ children }) => {
         </div>
         <div>
           <ul className="px-4">
-            {links.map((link) => (
+            {adminLinks.map((link) => (
               <li key={link.name} className="text-xl my-4">
                 <Link href={link.href}>{link.name}</Link>
               </li>
