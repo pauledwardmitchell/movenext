@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 
 import { Input } from "@material-tailwind/react"
 
+import SmallExerciseCard from '@/components/SmallExerciseCard'
+
 const TemplateForm =  ( {exercises} ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
@@ -31,14 +33,21 @@ const TemplateForm =  ( {exercises} ) => {
 
 	return (
 	  <div>
-	  <input onChange={ (e) => setQuery(e.target.value)}></input>
-      <button>Filter</button>
-			<div className="grid grid-cols-3 gap-4">
+	  <input className="bg-gray-100 rounded border-2 border-purple-500" placeholder="start typing..."onChange={ (e) => setQuery(e.target.value)}></input>
+      <button className="">Filter</button>
+			<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
 			{search(exercisesToRender).map((exercise) => (
-				<button 
-					key={exercise.id} 
-					onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
-					>{exercise.name}</button>
+				<div className="max-w-[15rem]"
+						 key={exercise.id}
+						 onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
+				>
+					<SmallExerciseCard exercise={exercise} />
+				</div>
+				// <button 
+				// 	key={exercise.id} 
+				// 	className="bg-blue-500 text-white px-4 py-10 rounded"
+				// 	onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
+				// 	>{exercise.name}</button>
 			))}
 			</div> 
 	  <aside className="absolute right-0 top-[60px] h-full w-[400px] border-l border-black/10">

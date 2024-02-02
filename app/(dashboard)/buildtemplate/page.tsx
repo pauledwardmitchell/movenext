@@ -4,7 +4,6 @@ import TemplateForm from "@/components/TemplateForm"
 
 const getExercises = async () => {
 	const exercises = await prisma.exercise.findMany()
-	console.log('all exercises', exercises)
 	return exercises
 }
 
