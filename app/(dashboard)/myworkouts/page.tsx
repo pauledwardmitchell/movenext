@@ -25,12 +25,12 @@ const MyWorkoutsPage = async () => {
 	const assignments = await getAssignments()
 	return (
 		<div>
-			<div>my workouts here</div>
+			<h4>my workouts here</h4>
 			<ul>
 				{assignments.map(assignment => (
 					
 	    				<li key={assignment.id}>
-	    					<Link href={`/assignment/${assignment.id}`} key={assignment.id}>{assignment.template.name} {assignment.name}</Link>
+	    					<Link href={`/assignment/${assignment.id}`} key={assignment.id}>{assignment.name}</Link>
 	    				</li>
 	    			))}
 			</ul>

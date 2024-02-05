@@ -2,7 +2,6 @@ const ExerciseCard = ( {exercise} ) => {
 	return (
 		<div className="w-full h-full">
 			<div>{exercise.name}</div>
-			<div>{exercise.description}</div>	
 			<iframe 
 				width="400" 
 				height="200" 
