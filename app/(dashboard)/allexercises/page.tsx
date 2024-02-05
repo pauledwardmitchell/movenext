@@ -16,7 +16,7 @@ const BuildTemplatePage = async () => {
 			<div className="">
 			<ul>
 			{exercises.map((exercise) => (
-				<li>
+				<li key={exercise.id}>
 					<Link href={`/exercise/${exercise.id}`}>{exercise.name}</Link>
 				</li>
 			))}

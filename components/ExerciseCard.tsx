@@ -7,7 +7,7 @@ const ExerciseCard = ( {exercise} ) => {
 				width="400" 
 				height="200" 
 				src={exercise.video} 
-				title="Dienstag Abs" 
+				title={exercise.name}
 			></iframe>
 		</div>
 )}

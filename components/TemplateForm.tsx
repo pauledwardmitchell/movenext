@@ -32,11 +32,11 @@ const TemplateForm =  ( {exercises} ) => {
   }
 
 	return (
-	  <div className="grid md:grid-cols-[auto_1fr] sm:grid-cols-1">
+	  <div className="grid md:grid-cols-[auto_350px] sm:grid-cols-1">
 	  	<div className="bg-red-100">
 		  	<input className="bg-gray-100 rounded border-2 border-purple-500" placeholder="start typing..."onChange={ (e) => setQuery(e.target.value)}></input>
 	      <button className="">Filter</button>
-				<div className="grid grid-cols-3 gap-3">
+				<div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3">
 				{search(exercisesToRender).map((exercise) => (
 					<div className="max-w-[15rem]"
 							 key={exercise.id}
