@@ -30,6 +30,7 @@ const MenuLinks = async () => {
 
 	return (
         <div>
+          <span className="text-3xl">MOVE</span>
           <ul className="px-4">
             {links(user.role).map((link) => (
               <li key={link.name} className="text-xl my-4">

@@ -11,7 +11,7 @@ export default async function Home() {
       <div className="w-full max-w-[600px] mx-auto">
         <h1 className="text-6xl mb-4">Howzit members!</h1>
         <p className="text-2xl text-white/60 mb-4">
-          This is the best app for getting your patients moving.
+          Let's get those patients moving.
         </p>
         <div>
           <Link href={href}>

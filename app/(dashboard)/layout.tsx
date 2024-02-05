@@ -2,27 +2,28 @@ import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import MenuLinks from "@/components/MenuLinks"
+// import SimpleNavBar from "@/components/SimpleNavBar"
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="w-screen h-screen relative">
-      <aside className="absolute left-0 top-0 h-full w-[200px] border-r border-black/10">
-        <div className="px-4 my-4">
-          <span className="text-3xl">MOVE</span>
-        </div>
-        <MenuLinks />
-      </aside>
-      <div className="ml-[200px] h-full">
-        <header className="h-[60px] border-b border-black/10">
-          <nav className="px-4 h-full">
-            <div className="flex items-center justify-end h-full">
-              <UserButton afterSignOutUrl="/" />
-            </div>
-          </nav>
+    <main className="grid w-screen h-screen grid-cols-1 sm:grid-cols-[1fr_6fr] sm:grid-rows-[1fr_6fr_1fr]">
+        
+        <header className="h-[60px] bg-gray-100 border-b border-black/10 sm:col-span-2">
+          <div className="flex items-center justify-end h-full px-4">
+            <UserButton className="" afterSignOutUrl="/" />
+          </div>
         </header>
-        <div className="h-[calc(100vh-60px)]">{children}</div>
-      </div>
-    </div>
+
+      <nav className="bg-green-100 border-r border-black/10">
+        <MenuLinks />
+      </nav>
+      
+      <div className="bg-blue-100">{children}</div>
+
+      <footer className="bg-yellow-100 sm:col-span-2">
+        FOOTER
+      </footer>
+    </main>
   )
 }
 
