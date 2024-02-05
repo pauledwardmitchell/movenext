@@ -1,3 +1,7 @@
+'use client'
+
+import { Image } from 'next/image'
+
 import {
   Card,
   CardHeader,
@@ -15,7 +19,7 @@ const SmallExerciseCard = ( {exercise} ) => {
         color="transparent"
         className="m-0 rounded-none"
       >
-        <img
+        <Image
           src="https://telehab-exercise-thumbnails.s3.ap-southeast-2.amazonaws.com/ID_50-508x540.jpg"
           alt={exercise.name}
         />

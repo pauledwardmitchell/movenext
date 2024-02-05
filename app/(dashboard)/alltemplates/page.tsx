@@ -16,7 +16,7 @@ const AllTemplatesPage = async () => {
 			<div className="">
 			<ul>
 			{templates.map((template) => (
-				<li>
+				<li key={template.id}>
 					<Link href={`/template/${template.id}`}>{template.name}</Link>
 				</li>
 			))}

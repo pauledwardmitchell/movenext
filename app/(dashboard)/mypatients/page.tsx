@@ -17,7 +17,7 @@ const MyPatientsPage = async () => {
 			<div className="">
 			<ul>
 			{users.map((user) => (
-				<li>
+				<li key={user.id}>
 					<Link href={`/user/${user.id}`}>{user.email}</Link>
 				</li>
 			))}
