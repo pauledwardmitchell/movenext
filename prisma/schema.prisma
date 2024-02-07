@@ -35,6 +35,7 @@ model Exercise {
 
   name        String @unique
   video       String
+  image       String @default("https://images.squarespace-cdn.com/content/v1/56801605c21b8647030fa31c/cde09427-724d-479b-b165-2126d210695e/Augustyn+Fitness+logo.jpg?format=1500w")
   description String
 
   templates Template[]

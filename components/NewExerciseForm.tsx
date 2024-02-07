@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 const NewExerciseForm = () => {
   const [name, setName] = useState("")
   const [video, setVideo] = useState("")
+  const [image, setImage] = useState("")
   const [description, setDescription] = useState("")
 
   const router = useRouter()
@@ -16,6 +17,7 @@ const NewExerciseForm = () => {
   const exerciseData = {
     name: name,
     video: video,
+    image: image,
     description: description
   }
 
@@ -32,6 +34,8 @@ const NewExerciseForm = () => {
         <textarea value={name} onChange={(e) => setName(e.target.value)} />
         <label>video</label>        
         <textarea value={video} onChange={(e) => setVideo(e.target.value)} />
+        <label>image</label>        
+        <textarea value={image} onChange={(e) => setImage(e.target.value)} />
         <label>description</label>
         <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
         <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl" onClick={handleOnClick}>submit</button>

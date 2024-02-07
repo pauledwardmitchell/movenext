@@ -7,6 +7,7 @@ export const POST = async ( request: Request ) => {
 		data: {
 			name: data.name,
 			video: data.video,
+			image: data.image,
 			description: data.description
 		}
 	})

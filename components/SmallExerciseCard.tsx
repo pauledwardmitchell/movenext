@@ -1,7 +1,5 @@
 'use client'
 
-import Image from 'next/image'
-
 import {
   Card,
   CardHeader,
@@ -18,10 +16,10 @@ const SmallExerciseCard = ( {exercise} ) => {
         color="transparent"
         className="m-0 rounded-none"
       >
-        <Image
-          src=""
+        <img 
           width={200}
-          height={200}
+          height={180}
+          src='https://images.squarespace-cdn.com/content/v1/56801605c21b8647030fa31c/cde09427-724d-479b-b165-2126d210695e/Augustyn+Fitness+logo.jpg?format=1500w'
           alt={exercise.name}
         />
       </CardHeader>
