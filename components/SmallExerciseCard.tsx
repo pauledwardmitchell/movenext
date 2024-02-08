@@ -1,5 +1,7 @@
 'use client'
 
+import { CldImage } from 'next-cloudinary'
+
 import {
   Card,
   CardHeader,
@@ -16,10 +18,10 @@ const SmallExerciseCard = ( {exercise} ) => {
         color="transparent"
         className="m-0 rounded-none"
       >
-        <img 
+        <CldImage 
           width={200}
           height={180}
-          src='https://images.squarespace-cdn.com/content/v1/56801605c21b8647030fa31c/cde09427-724d-479b-b165-2126d210695e/Augustyn+Fitness+logo.jpg?format=1500w'
+          src='push-up-image'
           alt={exercise.name}
         />
       </CardHeader>
