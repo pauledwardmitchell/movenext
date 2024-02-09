@@ -34,9 +34,9 @@ model Exercise {
   updatedAt DateTime @updatedAt
 
   name        String @unique
-  video       String
-  image       String @default("https://images.squarespace-cdn.com/content/v1/56801605c21b8647030fa31c/cde09427-724d-479b-b165-2126d210695e/Augustyn+Fitness+logo.jpg?format=1500w")
-  description String
+  video       String @default("push-up-video")
+  image       String @default("push-up-image")
+  description String @default("3 sets | 10 reps | 30 secs rest")
 
   templates Template[]
 }

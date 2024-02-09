@@ -36,7 +36,6 @@ const UserSelect = ( {params, users, templateName} ) => {
 				id = users[i].id
 			}
 		}
-		console.log(id)
 		return id
 	}
 
