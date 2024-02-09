@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import { CldImage } from 'next-cloudinary'
 
 import {
   Card,
@@ -18,10 +18,10 @@ const SmallExerciseCard = ( {exercise} ) => {
         color="transparent"
         className="m-0 rounded-none"
       >
-        <Image
-          src=""
+        <CldImage 
           width={200}
-          height={200}
+          height={180}
+          src='push-up-image'
           alt={exercise.name}
         />
       </CardHeader>

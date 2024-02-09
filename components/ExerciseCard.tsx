@@ -1,14 +1,26 @@
+"use client"
+
+import { getCldVideoUrl } from 'next-cloudinary'
+
 const ExerciseCard = ( {exercise} ) => {
+	const url = getCldVideoUrl({
+		width: 800,
+		height: 600,
+		src: 'push-up-video'
+	})
+
 	return (
 		<div className="w-full h-full">
 			<div>{exercise.name}</div>
-			<iframe 
-				width="400" 
-				height="200" 
-				src={exercise.video} 
-				title={exercise.name}
-			></iframe>
+			<video width="800" height="600" controls >
+				<source src={url}/>
+			</video>
 		</div>
 )}
 
 export default ExerciseCard
+
+
+
+
+
