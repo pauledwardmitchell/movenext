@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs"
 
 export default async function Home() {
   const { userId } = await auth()
-  let href = userId ? '/myworkouts' : '/new-user'
+  let href = userId ? '/myworkouts' : '/sign-in'
 
   return (
     <div className="w-screen h-screen bg-black flex justify-center items-center text-white">
