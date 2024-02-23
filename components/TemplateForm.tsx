@@ -16,7 +16,7 @@ const TemplateForm =  ( {exercises} ) => {
   const [templateName, setTemplateName] = useState("")
 
   const search = (exercises) => {
-		return exercises.filter((item) => item.name.toLowerCase().includes(query))
+		return exercises.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()))
 	}
 
   const router = useRouter()
