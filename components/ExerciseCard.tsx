@@ -1,11 +1,11 @@
 "use client"
 
 import { CldVideoPlayer } from 'next-cloudinary'
+import 'next-cloudinary/dist/cld-video-player.css'
 
 const ExerciseCard = ( {exercise} ) => {
 	return (
 		<div className="w-full h-full">
-			<div>{exercise.name}</div>
 			<CldVideoPlayer
 			  width="800" 
 			  height="600"
