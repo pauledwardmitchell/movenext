@@ -13,16 +13,13 @@ const UserSelect = ( {params, users, templateName} ) => {
 
 	const formattedName = () => {
 		const date = new Date()
-		const options = { weekday: 'long',
-						  year: 'numeric',
-						  month: 'long',
-						  day: 'numeric',
-						  hour: '2-digit',
-						  minute: '2-digit',
-						  seccond: '2-digit'
-		}
+		const options = {
+		  month: 'numeric', 
+		  day: 'numeric', 
+		  year: 'numeric',
+		};
 		const formattedDate = date.toLocaleDateString("en-US", options)
-		const name = templateName + ": assigned on " + formattedDate
+		const name = templateName + " (" + formattedDate + ")"
 		console.log('name', name)
 		return name
 	}
