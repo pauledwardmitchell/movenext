@@ -14,7 +14,11 @@ const getAssignments = async () => {
 	      createdAt: 'desc',
 	    },
 	    include: {
-	    	template: true
+	    	template: {
+	    		include: {
+	    			exercises: true
+	    		}
+	    	},
 	    }
 	})
 
@@ -26,7 +30,7 @@ const MyWorkoutsPage = async () => {
   const assignments = await getAssignments()
 
 return (
-    <div className="bg-blue-50">
+    <div className="bg-blue-50 h-screen">
       <div className="container mx-auto px-4">
         {/* Top Navigation */}
         <nav className="flex justify-between items-center py-6">        
