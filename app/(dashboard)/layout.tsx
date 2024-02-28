@@ -2,7 +2,6 @@ import { UserButton } from '@clerk/nextjs'
 import Link from 'next/link'
 
 import MenuLinks from "@/components/MenuLinks"
-// import SimpleNavBar from "@/components/SimpleNavBar"
 
 const DashboardLayout = ({ children }) => {
   return (
