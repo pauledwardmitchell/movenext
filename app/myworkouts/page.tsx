@@ -1,14 +1,14 @@
 import { prisma } from "@/utils/db"
 import { getUserFromClerkID } from '@/utils/auth'
 import { UserButton } from '@clerk/nextjs'
+import { redirect } from 'next/navigation'
 
 import MyWorkoutsContent from "@/components/MyWorkoutsContent"
 
-const getAssignments = async () => {
-	const user = await getUserFromClerkID()
+const getAssignments = async ( id ) => {
 	const assignments = await prisma.assignment.findMany({
 	    where: {
-	      userId: user.id,
+	      userId: id,
 	    },
 	    orderBy: {
 	      createdAt: 'desc',
@@ -26,8 +26,8 @@ const getAssignments = async () => {
 }
 
 const MyWorkoutsPage = async () => {
-
-  const assignments = await getAssignments()
+  const user = await getUserFromClerkID()
+  const assignments = await getAssignments( user.id )
 
 return (
     <div className="bg-blue-50 h-screen">

@@ -1,9 +1,19 @@
+import { getUserFromClerkID } from '@/utils/auth'
 import { UserButton } from '@clerk/nextjs'
-import Link from 'next/link'
+import { redirect } from 'next/navigation'
+// import Link from 'next/link'
 
 import MenuLinks from "@/components/MenuLinks"
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = async ({ children }) => {
+
+  const user = await getUserFromClerkID()
+
+  if (user.role !== 'ADMIN') {
+    redirect('/myworkouts')
+    return null
+  }
+
   return (
     <main className="grid w-screen h-screen grid-cols-1 sm:grid-cols-[1fr_6fr] sm:grid-rows-[60px_6fr_1fr]">
         

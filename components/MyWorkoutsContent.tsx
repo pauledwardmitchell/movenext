@@ -1,11 +1,11 @@
 "use client"
+
 import { useState } from 'react'
 
 import ResponsiveModal from "@/components/ResponsiveModal"
 
 
 const MyWorkoutsContent = (assignments) => {
-console.log("assignments inside myworkouts content ", assignments)
   const [isModalOpen, setModalOpen] = useState(false);
   const [assignment, setAssignment] = useState({})
 
@@ -30,7 +30,7 @@ return (
 	    			{assignment.name}
 	    		</p>
 	    	))}
-	    	
+
             <ResponsiveModal isOpen={isModalOpen} closeModal={closeModal} assignment={assignment} />
           </section>
         </main>

@@ -11,12 +11,11 @@ export default async function Home() {
       <div className="w-full max-w-[600px] mx-auto">
         <h1 className="text-6xl mb-4">Howzit, members!</h1>
         <p className="text-2xl text-white/60 mb-4">
-          Go get those patients moving.
         </p>
         <div>
           <Link href={href}>
             <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl">
-              get started
+              get moving
             </button>
           </Link>
         </div>
