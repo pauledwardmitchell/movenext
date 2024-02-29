@@ -11,7 +11,7 @@ import {
  
 const SmallExerciseCard = ( {exercise} ) => {
   return (
-    <Card key={exercise.id} className="max-w-[15rem] overflow-hidden">
+    <Card key={exercise.id} className="max-w-[200px] overflow-hidden">
       <CardHeader
         floated={false}
         shadow={false}
@@ -21,7 +21,7 @@ const SmallExerciseCard = ( {exercise} ) => {
         <CldImage 
           width={200}
           height={180}
-          src='push-up-image'
+          src={exercise.image}
           alt={exercise.name}
         />
       </CardHeader>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createNewExercise } from '@/utils/api'
 
 import Papa from 'papaparse'
@@ -8,81 +8,49 @@ import Papa from 'papaparse'
 const UploadExercises = () => {
   const [exercisesToUpload, setExercisesToUpload] = useState([])
   const [message, setMessage] = useState('');
+  const [createdExercises, setConfirmedExercises] = useState([])
   const [isError, setIsError] = useState(false);
 
   const handleUpload = () => {
     for (let i = 0; i < exercisesToUpload.length; i++) {
       singleExerciseRequest(exercisesToUpload[i])
-      //somehow error handle 
     }  
+    setExercisesToUpload([])
   }
 
   const singleExerciseRequest = async ( exerciseData ) => {
     const { data } = await createNewExercise( exerciseData )
+
+    if (data.name) {
+      setConfirmedExercises(prevExercises => [...prevExercises, data.name])
+    } else {
+      setMessage(result.error || 'An error occurred during the upload.');
+      setIsError(true);
+    }
   }
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    // console.log("uploaded file: ", file)
 
-    // let parsedStuff = {}
     Papa.parse(file, {
       skipEmptyLines: true,
       header: true,
       complete: (results) => {
-        console.log("Finished:", results.data);
         setExercisesToUpload(results.data)
-        // parsedStuff = results.data
-        console.log("in state: ", exercisesToUpload)
-        //   try {
-        //   const response = await fetch('/api/upload', {
-        //     method: 'POST',
-        //     body: results.data,
-        //   });
-
-        //   const result = await response.json();
-
-        //   if (response.ok) {
-        //     setMessage(result.message);
-        //     setIsError(false);
-        //   } else {
-        //     setMessage(result.error || 'An error occurred during the upload.');
-        //     setIsError(true);
-        //   }
-        // } catch (error) {
-        //   setMessage('An error occurred during the upload.');
-        //   setIsError(true);
-        // }
-
       }
-
     });
-
-
-    // const formData = new FormData();
-    // formData.append('file', file);
-    // console.log("formData log: ", formData)
-
-    // try {
-    //   const response = await fetch('/api/upload', {
-    //     method: 'POST',
-    //     body: formData,
-    //   });
-
-    //   const result = await response.json();
-
-    //   if (response.ok) {
-    //     setMessage(result.message);
-    //     setIsError(false);
-    //   } else {
-    //     setMessage(result.error || 'An error occurred during the upload.');
-    //     setIsError(true);
-    //   }
-    // } catch (error) {
-    //   setMessage('An error occurred during the upload.');
-    //   setIsError(true);
-    // }
   };
+
+  const renderCreatedExercisesList = () => {
+    if (createdExercises.length > 0) {
+      return (
+        createdExercises.map(exercise => (
+          <p key={exercise}>An exercise named "{exercise}" was created.</p>))
+      )
+    } else {
+      return (<div></div>)
+    }
+  }
 
   return (
     <div>
@@ -92,8 +60,9 @@ const UploadExercises = () => {
         <p style={{ color: isError ? 'red' : 'green' }}>{message}</p>
       )}
       <pre>{JSON.stringify(exercisesToUpload, null, 2)}</pre>
-      <span>{exercisesToUpload.length}</span>
-      <button onClick={handleUpload}>upload those bad boys</button>
+      <p>{exercisesToUpload.length} exercises set to upload!</p>
+      <button className="border border-black text-black rounded px-2 py-2 bg-transparent hover:bg-black hover:text-white transition duration-150 ease-in-out" onClick={handleUpload}>upload those bad boys</button>
+      {renderCreatedExercisesList()}
     </div>
   );
 }
