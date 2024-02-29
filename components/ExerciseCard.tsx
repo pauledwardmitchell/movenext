@@ -7,9 +7,9 @@ const ExerciseCard = ( {exercise} ) => {
 	return (
 		<div className="w-full h-full">
 			<CldVideoPlayer
-			  width="800" 
-			  height="600"
-			  src="push-up-video"
+			  width="768" 
+			  height="432"
+			  src={exercise.video}
 			/>
 		</div>
 )}

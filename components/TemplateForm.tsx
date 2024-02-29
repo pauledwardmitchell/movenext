@@ -44,11 +44,6 @@ const TemplateForm =  ( {exercises} ) => {
 					>
 						<SmallExerciseCard exercise={exercise} />
 					</div>
-					// <button 
-					// 	key={exercise.id} 
-					// 	className="bg-blue-500 text-white px-4 py-10 rounded"
-					// 	onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
-					// 	>{exercise.name}</button>
 				))}
 				</div> 
 			</div>
