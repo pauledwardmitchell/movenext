@@ -3,7 +3,6 @@
 import { useState } from "react"
 
 import { createNewExercise } from '@/utils/api'
-// import { revalidatePath } from 'next/cache'
 import { useRouter } from 'next/navigation'
 
 const NewExerciseForm = () => {
