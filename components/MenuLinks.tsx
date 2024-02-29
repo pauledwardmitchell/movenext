@@ -8,7 +8,7 @@ const adminLinks = [
   { name: 'All Exercises', href: '/allexercises' },
   { name: 'All Templates', href: '/alltemplates' },
   { name: 'My Patients', href: '/mypatients' },
-  { name: 'My Workouts', href: '/myworkouts' }
+  { name: 'Upload Exercises', href: '/uploadexercises' }
 ]
 
 const userLinks = [
