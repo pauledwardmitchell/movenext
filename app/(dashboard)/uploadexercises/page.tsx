@@ -2,20 +2,24 @@
 
 import { useEffect, useState } from 'react'
 import { createNewExercise } from '@/utils/api'
+import { Spinner } from "@/components/Spinner"
 
 import Papa from 'papaparse'
 
 const UploadExercises = () => {
   const [exercisesToUpload, setExercisesToUpload] = useState([])
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('')
   const [createdExercises, setConfirmedExercises] = useState([])
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleUpload = () => {
+    setLoading(true)
     for (let i = 0; i < exercisesToUpload.length; i++) {
       singleExerciseRequest(exercisesToUpload[i])
     }  
     setExercisesToUpload([])
+    setLoading(false)
   }
 
   const singleExerciseRequest = async ( exerciseData ) => {
@@ -24,7 +28,7 @@ const UploadExercises = () => {
     if (data.name) {
       setConfirmedExercises(prevExercises => [...prevExercises, data.name])
     } else {
-      setMessage(result.error || 'An error occurred during the upload.');
+      setMessage(result.error || 'An error occurred during the upload. Contact the administrator.');
       setIsError(true);
     }
   }
@@ -61,7 +65,12 @@ const UploadExercises = () => {
       )}
       <pre>{JSON.stringify(exercisesToUpload, null, 2)}</pre>
       <p>{exercisesToUpload.length} exercises set to upload!</p>
-      <button className="border border-black text-black rounded px-2 py-2 bg-transparent hover:bg-black hover:text-white transition duration-150 ease-in-out" onClick={handleUpload}>upload those bad boys</button>
+      <button className="border border-black text-black rounded px-2 py-2 bg-transparent hover:bg-black hover:text-white transition duration-150 ease-in-out" disabled={loading} onClick={handleUpload}>upload those bad boys</button>
+      {loading ? (
+        <Spinner />
+        ):(
+          <div></div>
+        )}
       {renderCreatedExercisesList()}
     </div>
   );
