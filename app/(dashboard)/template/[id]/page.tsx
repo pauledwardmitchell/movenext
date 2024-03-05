@@ -24,6 +24,7 @@ const getUserSelectOptions = async () => {
 	for (i = 0; i < users.length; i++) {
 		let obj = {
 		  value: users[i].email,
+		  name: users[i].firstName + " " + users[i].lastName,
 		  index: i,
 		  id: users[i].id,
 		}

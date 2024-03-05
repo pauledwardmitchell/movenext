@@ -20,7 +20,6 @@ const UserSelect = ( {params, users, templateName} ) => {
 		};
 		const formattedDate = date.toLocaleDateString("en-US", options)
 		const name = templateName + " (" + formattedDate + ")"
-		console.log('name', name)
 		return name
 	}
 	
@@ -51,7 +50,7 @@ const UserSelect = ( {params, users, templateName} ) => {
 		<div>
 	    	<Select label="Assign Template to a Patient" value={name} onChange={setName}>
 	    	  {users.map(user => (
-	    	  	<Option key={user.index} value={user.value}>{user.value}</Option>
+	    	  	<Option key={user.index} value={user.value}>{user.name}</Option>
 	    	  	))}
 	    	</Select>
 	    	<Button onClick={handleOnClick}>Assign</Button>
