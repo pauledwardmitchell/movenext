@@ -17,6 +17,8 @@ model User {
   updatedAt DateTime @updatedAt
   clerkId   String   @unique
   email     String   @unique
+  firstName String   @default("first")
+  lastName  String   @default("last")
 
   role UserRole @default(USER)
 
