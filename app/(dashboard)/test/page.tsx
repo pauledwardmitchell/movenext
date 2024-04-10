@@ -1,97 +1,162 @@
 'use client'
 
 import { useState } from 'react';
-import { DndProvider, useDrag, useDrop } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import 'tailwindcss/tailwind.css';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
-const ItemType = 'MenuItem';
+function SortableItem({ id, exercise, onEdit }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id });
 
-const DraggableMenuItem = ({ id, text }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemType,
-    item: { id, text },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
-
-  return (
-    <div
-      ref={drag}
-      className={`p-2 m-1 bg-blue-500 text-white rounded cursor-pointer ${isDragging ? 'opacity-50' : 'opacity-100'}`}
-    >
-      {text}
-    </div>
-  );
-};
-
-const DropArea = ({ items, setItems, index }) => {
-  const [, drop] = useDrop(() => ({
-    accept: ItemType,
-    drop: (item, monitor) => {
-      const clientOffset = monitor.getClientOffset();
-      const componentRect = monitor.getSourceClientOffset();
-      let dropIndex = items.length;
-
-      if (clientOffset && componentRect) {
-        const yDifference = clientOffset.y - componentRect.y;
-        dropIndex = Math.floor(yDifference / 30); // Assuming each item has a height of 30px
-      }
-
-      const newItems = [...items];
-      newItems.splice(dropIndex, 0, { id: item.id, text: item.text });
-      setItems(index, newItems);
-    },
-  }));
-
-  return (
-    <div ref={drop} className="mt-5 p-5 bg-gray-200 rounded min-h-[100px]">
-      {items.map((item, index) => (
-        <DraggableMenuItem key={item.id} id={`${index}-${item.id}`} text={item.text} />
-      ))}
-    </div>
-  );
-};
-
-function DragDropMenu() {
-  const [areas, setAreas] = useState([]);
-
-  const addDropArea = () => {
-    setAreas([...areas, []]);
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
   };
 
-  const setItems = (areaIndex, newItems) => {
-    const newAreas = areas.map((area, index) => {
-      if (index === areaIndex) {
-        return newItems;
-      }
-      return area;
-    });
-    setAreas(newAreas);
+  // This function prevents the modal from opening when the handle is clicked.
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+    onEdit(exercise);
   };
 
-  const menuItems = [];
-  for (let i = 1; i <= 10; i++) {
-    menuItems.push(<DraggableMenuItem key={i} id={i.toString()} text={`Item ${i}`} />);
-  }
-
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="flex flex-wrap justify-around">
-        {areas.map((items, index) => (
-          <DropArea key={index} items={items} setItems={setItems} index={index} />
-        ))}
+    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow">
+      <div
+        ref={setActivatorNodeRef}
+        {...listeners}
+        {...attributes}
+        className="p-2 mr-2 bg-gray-400 rounded cursor-grab"
+      >
+        :::
       </div>
-      <button className="mt-4 p-2 bg-green-500 text-white rounded" onClick={addDropArea}>
-        Add Drop Area
-      </button>
-      <div className="flex flex-col items-center mt-4">
-        {menuItems}
+      <div onClick={handleContentClick} className="flex-1">
+        {exercise.name} - Sets: {exercise.sets}, Work: {exercise.work}
       </div>
-    </DndProvider>
+    </div>
   );
 }
 
-export default DragDropMenu;
+function EditModal({ isOpen, onClose, exercise, onSave }) {
+  if (!isOpen || !exercise) {
+    return null;
+  }
+
+  const [sets, setSets] = useState(exercise.sets);
+  const [work, setWork] = useState(exercise.work);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(exercise.id, sets, work);
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-4 rounded">
+        <h2 className="text-lg">Edit Exercise</h2>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="sets" className="block">Sets:</label>
+          <input
+            type="number"
+            id="sets"
+            value={sets}
+            onChange={(e) => setSets(Number(e.target.value))}
+            className="border p-1 w-full"
+          />
+          <label htmlFor="work" className="block mt-2">Work (Reps):</label>
+          <input
+            type="text"
+            id="work"
+            value={work}
+            onChange={(e) => setWork(e.target.value)}
+            className="border p-1 w-full"
+          />
+          <div className="mt-2">
+            <button type="submit" className="mr-2 bg-blue-500 text-white p-1 rounded">Save</button>
+            <button type="button" onClick={onClose} className="bg-gray-300 p-1 rounded">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+
+
+function VerticalDragAndDrop() {
+  const [exercises, setExercises] = useState([
+    { id: 'e1', name: 'Exercise 1', sets: 3, work: '10 reps' },
+    { id: 'e2', name: 'Exercise 2', sets: 4, work: '15 reps' },
+    { id: 'e3', name: 'Exercise 3', sets: 2, work: '5 reps' },
+    { id: 'e4', name: 'Exercise 4', sets: 3, work: '12 reps' },
+  ]);
+
+	const [isModalOpen, setModalOpen] = useState(false);
+  const [currentExercise, setCurrentExercise] = useState(null);
+
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
+
+  const handleEdit = (exercise) => {
+    setCurrentExercise(exercise);
+    setModalOpen(true);
+  };
+
+  const handleSave = (id, newSets, newWork) => {
+    setExercises(exercises.map(ex =>
+      ex.id === id ? { ...ex, sets: newSets, work: newWork } : ex
+    ));
+  };
+
+  const onDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setExercises((exercises) => {
+        const oldIndex = exercises.findIndex(exercise => exercise.id === active.id);
+        const newIndex = exercises.findIndex(exercise => exercise.id === over.id);
+        return arrayMove(exercises, oldIndex, newIndex);
+      });
+    }
+  };
+
+  return (
+    <>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <SortableContext items={exercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
+          {exercises.map((exercise) => (
+            <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} />
+          ))}
+        </SortableContext>
+      </DndContext>
+      <EditModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        exercise={currentExercise}
+        onSave={handleSave}
+      />
+    </>
+  );
+}
+
+export default VerticalDragAndDrop;
+
 
