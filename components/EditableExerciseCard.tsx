@@ -25,7 +25,6 @@ const EditableExerciseCard = ( {exercise} ) => {
   const handleOnClick = async () => {
     setLoading(true)
     const { data } = await updateExercise( exercise.id, exerciseData )
-    console.log("data in editable exercise card ", data)
     setLoading(false)
 
     router.push(`/allexercises`) //redirect location after submit
