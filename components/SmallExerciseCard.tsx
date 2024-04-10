@@ -1,6 +1,6 @@
 'use client'
 
-import { CldImage } from 'next-cloudinary'
+import { CldImage, getCldVideoUrl } from 'next-cloudinary'
 
 import {
   Card,
@@ -10,19 +10,25 @@ import {
 } from "@material-tailwind/react";
  
 const SmallExerciseCard = ( {exercise} ) => {
+
+const url = getCldVideoUrl({
+  width: 200,
+  height: 180,
+  src: exercise.video,
+})
+
   return (
     <Card key={exercise.id} className="max-w-[200px] overflow-hidden">
       <CardHeader
         floated={false}
         shadow={false}
         color="transparent"
-        className="m-0 rounded-none"
+        className="m-0 rounded-none aspect-w-16 aspect-h-9 overflow-hidden"
       >
-        <CldImage 
-          width={200}
-          height={180}
-          src={exercise.image}
+        <img 
+          src={url}
           alt={exercise.name}
+          className="w-full h-full object-cover object-center"
         />
       </CardHeader>
       <CardBody>
