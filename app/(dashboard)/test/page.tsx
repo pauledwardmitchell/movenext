@@ -147,7 +147,6 @@ function VerticalDragAndDrop() {
 	  // Add more shared exercises as needed
 	]);
 
-
 	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);

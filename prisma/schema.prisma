@@ -39,6 +39,8 @@ model Exercise {
   video       String @default("push-up-video")
   image       String @default("push-up-image")
   description String @default("3 sets | 10 reps | 30 secs rest")
+  sets        String @default("3")
+  work        String @default("10 reps")
 
   templates Template[]
 }
