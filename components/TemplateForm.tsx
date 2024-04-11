@@ -291,19 +291,24 @@ const TemplateForm =  ( {exercises} ) => {
 		      <button className="">Filter</button>
 					<div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3">
 					{search(exercisesToRender).map((exercise) => (
-						<div className="max-w-[15rem]"
-								 key={exercise.id}
-								 onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
-						>
-								<SmallExerciseCard exercise={exercise} />
-						</div>
+						<div className="max-w-[15rem]" key={exercise.id}>
+   						<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
+   					</div>
+						// <div className="max-w-[15rem]"
+						// 		 key={exercise.id}
+						// 		 onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
+						// >
+						// 		<SmallExerciseCard exercise={exercise} />
+						// </div>
 					))}
-				<p>pool</p>
-				<div>
+{/*				<p>pool</p>
+				<div className="max-w-[15rem]">
 				  {exercisesToRender.map(exercise => (
-   					<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
+				  	<div className="max-w-[200px] overflow-hidden">
+   						<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
+   					</div>
 				  ))}
-				</div>
+				</div>*/}
 					</div> 
 				</div>
 			  <div className="bg-green-100 border-l border-black/10">
@@ -313,10 +318,6 @@ const TemplateForm =  ( {exercises} ) => {
 			    <div className="h-[500px]cursor-pointer rounded-lg bg-white shadow">
 			      <div className="px-4 py-5 sm:p-6">
 			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)}></Input>
-{/*			        <ul>
-			    		  {templateExercises.map(exercise => (
-			    			<li key={exercise.id}>{exercise.name}</li>))}
-		    			</ul>*/}
 			      <p>warm up</p>
 	      <SortableContext items={warmUpExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
 	        {warmUpExercises.map((exercise) => (
