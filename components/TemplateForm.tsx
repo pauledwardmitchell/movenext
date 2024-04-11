@@ -88,12 +88,12 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  return (
 	    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="flex items-center p-4 bg-gray-300 rounded shadow">
 	      <div className="flex-1">
-	        {exercise.name} - Sets: {exercise.sets}, Work: {exercise.work}
 	        <img 
           src={url}
           alt={exercise.name}
           className="w-full h-full object-cover object-center"
         />
+       	{exercise.name} - Sets: {exercise.sets}, Work: {exercise.work}
 	      </div>
 	      {/* Edit and delete buttons can be added here if needed */}
 	    </div>
@@ -167,11 +167,11 @@ const TemplateForm =  ( {exercises} ) => {
     { id: 'e4e', name: 'Endurance Exercise 4', sets: 3, work: '12 reps' },
   ]);
 
-  const [sharedExercises, setSharedExercises] = useState([
-	  { id: 'shared1', name: 'Shared Exercise 1', sets: '3', work: '10 reps' },
-	  { id: 'shared2', name: 'Shared Exercise 2', sets: '4', work: '12 reps' },
-	  // Add more shared exercises as needed
-	]);
+  // const [sharedExercises, setSharedExercises] = useState([
+	//   { id: 'shared1', name: 'Shared Exercise 1', sets: '3', work: '10 reps' },
+	//   { id: 'shared2', name: 'Shared Exercise 2', sets: '4', work: '12 reps' },
+	//   // Add more shared exercises as needed
+	// ]);
 
 	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
@@ -210,33 +210,33 @@ const TemplateForm =  ( {exercises} ) => {
 
 	  // If still not found, look in sharedExercises
 	  if (!item) {
-	    item = sharedExercises.find(ex => ex.id === active.id);
+	    item = exercisesToRender.find(ex => ex.id === active.id);
 	  }
 
 	  setDraggedItem(item);
 	};
 
 	const onDragEnd = (event) => {
-  const { active, over } = event;
+	  const { active, over } = event;
 
-  if (!over || active.id === over.id) return;
+	  if (!over || active.id === over.id) return;
 
-  const activeContext = exercisesToRender.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
-  const overContext = warmUpExercises.some(exercise => exercise.id === over.id) ? 'warmUpExercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
+	  const activeContext = exercisesToRender.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
+	  const overContext = warmUpExercises.some(exercise => exercise.id === over.id) ? 'warmUpExercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
 
-  // Moving from exercisesToRender to a sortable context without removing from exercisesToRender
-  if (activeContext === 'shared' && overContext !== 'shared') {
-    const activeItem = exercisesToRender.find(exercise => exercise.id === active.id);
+	  // Moving from exercisesToRender to a sortable context without removing from exercisesToRender
+	  if (activeContext === 'shared' && overContext !== 'shared') {
+	    const activeItem = exercisesToRender.find(exercise => exercise.id === active.id);
+	    // Create a new ID that combines the original ID with the new context
+	    const newId = `${activeItem.id}-${overContext}`;
+	    const newItem = { ...activeItem, id: newId };
 
-    // No removal from exercisesToRender here
-
-    // Add to the targeted context
-    const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-    addState(prev => {
-      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-      return [...prev.slice(0, newIndex), activeItem, ...prev.slice(newIndex)];
-    });
-  } 
+	    const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
+	    addState(prev => {
+	      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+	      return [...prev.slice(0, newIndex), newItem, ...prev.slice(newIndex)];
+	    });
+	  } 
   // Reordering within the same context
   else if (overContext === activeContext) {
     const setState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
@@ -321,7 +321,7 @@ const TemplateForm =  ( {exercises} ) => {
 			      <p>warm up</p>
 	      <SortableContext items={warmUpExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
 	        {warmUpExercises.map((exercise) => (
-	          <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
+	          <SortableItem key={exercise.id+exercise.name} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
 	        ))}
 	      </SortableContext>
 	      <p>endurance</p>
