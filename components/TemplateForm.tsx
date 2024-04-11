@@ -221,14 +221,16 @@ const TemplateForm =  ( {exercises} ) => {
 
   if (!over || active.id === over.id) return;
 
-  const activeContext = sharedExercises.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
+  const activeContext = exercisesToRender.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
   const overContext = warmUpExercises.some(exercise => exercise.id === over.id) ? 'warmUpExercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
 
-  // Moving from shared to a sortable context
+  // Moving from exercisesToRender to a sortable context without removing from exercisesToRender
   if (activeContext === 'shared' && overContext !== 'shared') {
-    const activeItem = sharedExercises.find(exercise => exercise.id === active.id);
-    setSharedExercises(prev => prev.filter(exercise => exercise.id !== active.id));
+    const activeItem = exercisesToRender.find(exercise => exercise.id === active.id);
 
+    // No removal from exercisesToRender here
+
+    // Add to the targeted context
     const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
     addState(prev => {
       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
@@ -261,6 +263,7 @@ const TemplateForm =  ( {exercises} ) => {
   }
   setDraggedItem(null);
 };
+
 
 
 	//logic from legacy template form
