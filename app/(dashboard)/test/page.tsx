@@ -140,7 +140,7 @@ function VerticalDragAndDrop() {
 
   return (
     <>
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <DndContext id='unique-context-id' sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
         <SortableContext items={exercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
           {exercises.map((exercise) => (
             <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} />
@@ -153,6 +153,14 @@ function VerticalDragAndDrop() {
         exercise={currentExercise}
         onSave={handleSave}
       />
+	    <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
+	      <strong>Current State:</strong>
+	      {exercises.map((exercise, index) => (
+	        <div key={index} className="mb-2">
+	          {JSON.stringify(exercise, null, 2)}
+	        </div>
+	      ))}
+	    </div>
     </>
   );
 }
