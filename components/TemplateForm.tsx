@@ -93,7 +93,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
           alt={exercise.name}
           className="w-full h-full object-cover object-center"
         />
-       	{exercise.name} - Sets: {exercise.sets}, Work: {exercise.work}
+       	{exercise.name}
 	      </div>
 	      {/* Edit and delete buttons can be added here if needed */}
 	    </div>
@@ -154,24 +154,12 @@ const TemplateForm =  ( {exercises} ) => {
 
   // state from test dnd component
   const [warmUpExercises, setWarmUpExercises] = useState([
-    { id: 'e1', name: 'Exercise 1', sets: 3, work: '10 reps' },
-    { id: 'e2', name: 'Exercise 2', sets: 4, work: '15 reps' },
-    { id: 'e3', name: 'Exercise 3', sets: 2, work: '5 reps' },
-    { id: 'e4', name: 'Exercise 4', sets: 3, work: '12 reps' },
+    { id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' },
   ]);
 
   const [enduranceExercises, setEnduranceExercises] = useState([
-    { id: 'e1e', name: 'Endurance Exercise 1', sets: 3, work: '10 reps' },
-    { id: 'e2e', name: 'Endurance Exercise 2', sets: 4, work: '15 reps' },
-    { id: 'e3e', name: 'Endurance Exercise 3', sets: 2, work: '5 reps' },
-    { id: 'e4e', name: 'Endurance Exercise 4', sets: 3, work: '12 reps' },
+    { id: 'e1e', name: 'Placeholder', sets: 3, work: '10 reps' },
   ]);
-
-  // const [sharedExercises, setSharedExercises] = useState([
-	//   { id: 'shared1', name: 'Shared Exercise 1', sets: '3', work: '10 reps' },
-	//   { id: 'shared2', name: 'Shared Exercise 2', sets: '4', work: '12 reps' },
-	//   // Add more shared exercises as needed
-	// ]);
 
 	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
@@ -318,12 +306,21 @@ const TemplateForm =  ( {exercises} ) => {
 			    <div className="h-[500px]cursor-pointer rounded-lg bg-white shadow">
 			      <div className="px-4 py-5 sm:p-6">
 			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)}></Input>
-			      <p>warm up</p>
-	      <SortableContext items={warmUpExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
-	        {warmUpExercises.map((exercise) => (
-	          <SortableItem key={exercise.id+exercise.name} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
-	        ))}
-	      </SortableContext>
+	      <div className="bg-red-100 min-h-[300px] flex flex-col"> {/* Ensure this div expands to contain SortableContext */}
+				  <p>warm up</p>
+				  <SortableContext items={warmUpExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy} className="flex-1">
+				    {warmUpExercises.length > 0 ? (
+				      warmUpExercises.map((exercise) => (
+				        <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
+				      ))
+				    ) : (
+				      <div className="flex-1"> {/* This ensures the SortableContext has height when empty */}
+				        Drag Items Here
+				      </div>
+				    )}
+				  </SortableContext>
+				</div>
+
 	      <p>endurance</p>
 	      <SortableContext items={enduranceExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
 	        {enduranceExercises.map((exercise) => (
@@ -346,20 +343,20 @@ const TemplateForm =  ( {exercises} ) => {
       />
       <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
 	      <strong>Current State:</strong>
-	      <p>exercises to render</p>
+{/*	      <p>exercises to render</p>
 	      {exercisesToRender.map((exercise, index) => (
+	        <div key={index} className="mb-2">
+	          {JSON.stringify(exercise, null, 2)}
+	        </div>
+	      ))}*/}
+	      <p>warm up</p>
+	      {warmUpExercises.map((exercise, index) => (
 	        <div key={index} className="mb-2">
 	          {JSON.stringify(exercise, null, 2)}
 	        </div>
 	      ))}
 	      <p>endurance</p>
 	      {enduranceExercises.map((exercise, index) => (
-	        <div key={index} className="mb-2">
-	          {JSON.stringify(exercise, null, 2)}
-	        </div>
-	      ))}
-	      <p>warm up</p>
-	      {warmUpExercises.map((exercise, index) => (
 	        <div key={index} className="mb-2">
 	          {JSON.stringify(exercise, null, 2)}
 	        </div>
