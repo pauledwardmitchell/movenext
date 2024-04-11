@@ -8,6 +8,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  useDraggable,
+  DragOverlay,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -54,6 +56,29 @@ function SortableItem({ id, exercise, onEdit, onDelete }) {
   );
 }
 
+function DraggableItem({ id, exercise, onEdit }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useDraggable({ id });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="flex items-center p-4 bg-gray-300 rounded shadow">
+      <div className="flex-1">
+        {exercise.name} - Sets: {exercise.sets}, Work: {exercise.work}
+      </div>
+      {/* Edit and delete buttons can be added here if needed */}
+    </div>
+  );
+}
 
 function EditModal({ isOpen, onClose, exercise, onSave }) {
   if (!isOpen || !exercise) {
@@ -101,7 +126,6 @@ function EditModal({ isOpen, onClose, exercise, onSave }) {
 }
 
 
-
 function VerticalDragAndDrop() {
   const [exercises, setExercises] = useState([
     { id: 'e1', name: 'Exercise 1', sets: 3, work: '10 reps' },
@@ -126,6 +150,7 @@ function VerticalDragAndDrop() {
 
 	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
+  const [draggedItem, setDraggedItem] = useState(null);
 
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
@@ -145,49 +170,74 @@ function VerticalDragAndDrop() {
 	  setEnduranceExercises(enduranceExercises => enduranceExercises.filter(exercise => exercise.id !== id));
 	};
 
+  const onDragStart = (event) => {
+	  const { active } = event;
+
+	  // Look for the item in the exercises array
+	  let item = exercises.find(ex => ex.id === active.id);
+	  
+	  // If not found in exercises, look in enduranceExercises
+	  if (!item) {
+	    item = enduranceExercises.find(ex => ex.id === active.id);
+	  }
+
+	  // If still not found, look in sharedExercises
+	  if (!item) {
+	    item = sharedExercises.find(ex => ex.id === active.id);
+	  }
+
+	  setDraggedItem(item);
+	};
+
 const onDragEnd = (event) => {
   const { active, over } = event;
 
   if (!over || active.id === over.id) return;
 
-  // Determine the context for the active and over items
-  const activeContext = active.id.startsWith('shared') ? 'shared' : exercises.some(exercise => exercise.id === active.id) ? 'exercises' : 'enduranceExercises';
-  const overContext = over.id.startsWith('shared') ? 'shared' : exercises.some(exercise => exercise.id === over.id) ? 'exercises' : 'enduranceExercises';
+  const activeContext = sharedExercises.some(exercise => exercise.id === active.id) ? 'shared' : exercises.some(exercise => exercise.id === active.id) ? 'exercises' : 'enduranceExercises';
+  const overContext = exercises.some(exercise => exercise.id === over.id) ? 'exercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
 
-  if (activeContext === overContext) {
-    // Reordering within the same context
-    const setState = activeContext === 'exercises' ? setExercises : activeContext === 'enduranceExercises' ? setEnduranceExercises : setSharedExercises;
-    setState(current => {
-      const oldIndex = current.findIndex(item => item.id === active.id);
-      const newIndex = current.findIndex(item => item.id === over.id);
-      return arrayMove(current, oldIndex, newIndex);
+  // Moving from shared to a sortable context
+  if (activeContext === 'shared' && overContext !== 'shared') {
+    const activeItem = sharedExercises.find(exercise => exercise.id === active.id);
+    setSharedExercises(prev => prev.filter(exercise => exercise.id !== active.id));
+
+    const addState = overContext === 'exercises' ? setExercises : setEnduranceExercises;
+    addState(prev => {
+      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+      return [...prev.slice(0, newIndex), activeItem, ...prev.slice(newIndex)];
     });
-  } else {
-    // Remove from the current context
-    const removeState = activeContext === 'exercises' ? setExercises : activeContext === 'enduranceExercises' ? setEnduranceExercises : setSharedExercises;
-    removeState(current => current.filter(item => item.id !== active.id));
+  } 
+  // Reordering within the same context
+  else if (overContext === activeContext) {
+    const setState = overContext === 'exercises' ? setExercises : setEnduranceExercises;
+    setState(prev => {
+      const oldIndex = prev.findIndex(exercise => exercise.id === active.id);
+      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  } 
+  // Moving between sortable contexts
+  else if (activeContext !== 'shared' && overContext !== 'shared' && activeContext !== overContext) {
+    const activeItem = activeContext === 'exercises' ? exercises.find(exercise => exercise.id === active.id) : enduranceExercises.find(exercise => exercise.id === active.id);
 
-    // Find the active item from all lists
-    const activeItem = [...exercises, ...enduranceExercises, ...sharedExercises].find(item => item.id === active.id);
+    // Remove from the original context
+    const removeState = activeContext === 'exercises' ? setExercises : setEnduranceExercises;
+    removeState(prev => prev.filter(exercise => exercise.id !== active.id));
 
-    // Handle moving to the shared pool separately to avoid indexing issues
-    if (overContext === 'shared') {
-      setSharedExercises(current => [...current, activeItem]);
-    } else {
-      // Add to the new context at the correct index
-      const addState = overContext === 'exercises' ? setExercises : setEnduranceExercises;
-      addState(current => {
-        const newIndex = current.findIndex(item => item.id === over.id);
-        return [...current.slice(0, newIndex), activeItem, ...current.slice(newIndex)];
-      });
-    }
+    // Add to the new context
+    const addState = overContext === 'exercises' ? setExercises : setEnduranceExercises;
+    addState(prev => {
+      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+      return [...prev.slice(0, newIndex), activeItem, ...prev.slice(newIndex)];
+    });
   }
+  setDraggedItem(null);
 };
-
 
   return (
     <>
-      <DndContext id='unique-context-id' sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <DndContext id='unique-context-id' sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
 	      <p>warm up</p>
 	      <SortableContext items={exercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
 	        {exercises.map((exercise) => (
@@ -201,12 +251,16 @@ const onDragEnd = (event) => {
 	        ))}
 	      </SortableContext>
 	      <p>pool</p>
-	      <SortableContext items={sharedExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
-				  {sharedExercises.map((exercise) => (
-				    <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
+				<div>
+				  {sharedExercises.map(exercise => (
+   					<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
 				  ))}
-				</SortableContext>
+				</div>
       </DndContext>
+			<DragOverlay>
+			  {draggedItem ? <SortableItem exercise={draggedItem} id={draggedItem.id} /> : null}
+			</DragOverlay>
+
       <EditModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
