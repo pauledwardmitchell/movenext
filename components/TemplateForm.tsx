@@ -211,15 +211,6 @@ const TemplateForm =  ( {exercises} ) => {
   const [templateExercises, setTemplateExercises] = useState([])
   const [templateName, setTemplateName] = useState("")
 
-  // state from test dnd component
-  const [warmUpExercises, setWarmUpExercises] = useState([
-    { id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' },
-  ]);
-
-  const [enduranceExercises, setEnduranceExercises] = useState([
-    { id: 'e1e', name: 'Placeholder', sets: 3, work: '10 reps' },
-  ]);
-
 	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -357,6 +348,7 @@ const onDragEnd = (event) => {
       {
         id: `${draggedItem.id}-${sections[destinationIndex].id}`, // Generate a unique ID for new items
         name: draggedItem.name, // Assuming draggedItem holds the required information
+        video: draggedItem.video,
         sets: draggedItem.sets || 3,
         work: draggedItem.work || '10 reps'
       };
@@ -481,18 +473,6 @@ const onDragEnd = (event) => {
 	      {sections.map((section, index) => (
 	        <div key={index} className="mb-2">
 	          {JSON.stringify(section, null, 2)}
-	        </div>
-	      ))}
-	      <p>warm up</p>
-	      {warmUpExercises.map((exercise, index) => (
-	        <div key={index} className="mb-2">
-	          {JSON.stringify(exercise, null, 2)}
-	        </div>
-	      ))}
-	      <p>endurance</p>
-	      {enduranceExercises.map((exercise, index) => (
-	        <div key={index} className="mb-2">
-	          {JSON.stringify(exercise, null, 2)}
 	        </div>
 	      ))}
 	    </div>
