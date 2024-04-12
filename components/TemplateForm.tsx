@@ -44,8 +44,8 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 
 	  // Stop propagation to prevent the item from being dragged when the delete button is clicked
 	  const handleDeleteClick = (e) => {
-	    e.stopPropagation();
-	    onDelete(id);
+	    e.stopPropagation(); // Prevent the drag event from firing
+	    onDelete(exercise.id); // Call the delete function with the exercise id
 	  };
 
 	  return (
@@ -165,6 +165,26 @@ const TemplateForm =  ( {exercises} ) => {
   const [currentExercise, setCurrentExercise] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
 
+  //dynamic sections logic
+  // Initial state with five default sections
+  const [sections, setSections] = useState([
+    { id: 'start', name: 'Start', exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'strength', name: 'Strength', exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'cardio', name: 'Cardio', exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'cooldown', name: 'Cooldown', exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'flexibility', name: 'Flexibility', exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+  ]);
+
+  const handleDeleteSection = (sectionId) => {
+    setSections(sections.filter(section => section.id !== sectionId));
+  };
+
+  const handleRenameSection = (sectionId, newName) => {
+    setSections(sections.map(section =>
+      section.id === sectionId ? { ...section, name: newName } : section
+    ));
+  };
+
   // dnd logic
 
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
@@ -180,10 +200,29 @@ const TemplateForm =  ( {exercises} ) => {
     ));
   };
 
-  const deleteExercise = (id) => {
-	  setWarmUpExercises(exercises => exercises.filter(exercise => exercise.id !== id));
-	  setEnduranceExercises(enduranceExercises => enduranceExercises.filter(exercise => exercise.id !== id));
+	const deleteExercise = (exerciseId) => {
+	  // Find which section contains the exercise to be deleted
+	  const sectionIndex = sections.findIndex(section => 
+	    section.exercises.some(ex => ex.id === exerciseId)
+	  );
+
+	  if (sectionIndex !== -1) {
+	    // Filter out the exercise from the found section
+	    const updatedExercises = sections[sectionIndex].exercises.filter(ex => ex.id !== exerciseId);
+
+	    // Update the section with the new exercises array
+	    const updatedSections = sections.map((section, idx) => {
+	      if (idx === sectionIndex) {
+	        return { ...section, exercises: updatedExercises };
+	      }
+	      return section;
+	    });
+
+	    // Update the state with the new sections array
+	    setSections(updatedSections);
+	  }
 	};
+
 
   const onDragStart = (event) => {
 	  const { active } = event;
@@ -204,54 +243,121 @@ const TemplateForm =  ( {exercises} ) => {
 	  setDraggedItem(item);
 	};
 
-	const onDragEnd = (event) => {
-	  const { active, over } = event;
+	// const onDragEnd = (event) => {
+	//   const { active, over } = event;
 
-	  if (!over || active.id === over.id) return;
+	//   if (!over || active.id === over.id) return;
 
-	  const activeContext = exercisesToRender.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
-	  const overContext = warmUpExercises.some(exercise => exercise.id === over.id) ? 'warmUpExercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
+	//   const activeContext = exercisesToRender.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
+	//   const overContext = warmUpExercises.some(exercise => exercise.id === over.id) ? 'warmUpExercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
 
-	  // Moving from exercisesToRender to a sortable context without removing from exercisesToRender
-	  if (activeContext === 'shared' && overContext !== 'shared') {
-	    const activeItem = exercisesToRender.find(exercise => exercise.id === active.id);
-	    // Create a new ID that combines the original ID with the new context
-	    const newId = `${activeItem.id}-${overContext}`;
-	    const newItem = { ...activeItem, id: newId };
+	//   // Moving from exercisesToRender to a sortable context without removing from exercisesToRender
+	//   if (activeContext === 'shared' && overContext !== 'shared') {
+	//     const activeItem = exercisesToRender.find(exercise => exercise.id === active.id);
+	//     // Create a new ID that combines the original ID with the new context
+	//     const newId = `${activeItem.id}-${overContext}`;
+	//     const newItem = { ...activeItem, id: newId };
 
-	    const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-	    addState(prev => {
-	      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-	      return [...prev.slice(0, newIndex), newItem, ...prev.slice(newIndex)];
-	    });
-	  } 
-  // Reordering within the same context
-  else if (overContext === activeContext) {
-    const setState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-    setState(prev => {
-      const oldIndex = prev.findIndex(exercise => exercise.id === active.id);
-      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-      return arrayMove(prev, oldIndex, newIndex);
-    });
-  } 
-  // Moving between sortable contexts
-  else if (activeContext !== 'shared' && overContext !== 'shared' && activeContext !== overContext) {
-    const activeItem = activeContext === 'warmUpExercises' ? warmUpExercises.find(exercise => exercise.id === active.id) : enduranceExercises.find(exercise => exercise.id === active.id);
+	//     const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
+	//     addState(prev => {
+	//       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+	//       return [...prev.slice(0, newIndex), newItem, ...prev.slice(newIndex)];
+	//     });
+	//   } 
+	//   // Reordering within the same context
+	//   else if (overContext === activeContext) {
+	//     const setState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
+	//     setState(prev => {
+	//       const oldIndex = prev.findIndex(exercise => exercise.id === active.id);
+	//       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+	//       return arrayMove(prev, oldIndex, newIndex);
+	//     });
+	//   } 
+	//   // Moving between sortable contexts
+	//   else if (activeContext !== 'shared' && overContext !== 'shared' && activeContext !== overContext) {
+	//     const activeItem = activeContext === 'warmUpExercises' ? warmUpExercises.find(exercise => exercise.id === active.id) : enduranceExercises.find(exercise => exercise.id === active.id);
 
-    // Remove from the original context
-    const removeState = activeContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-    removeState(prev => prev.filter(exercise => exercise.id !== active.id));
+	//     // Remove from the original context
+	//     const removeState = activeContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
+	//     removeState(prev => prev.filter(exercise => exercise.id !== active.id));
 
-    // Add to the new context
-    const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-    addState(prev => {
-      const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-      return [...prev.slice(0, newIndex), activeItem, ...prev.slice(newIndex)];
-    });
+	//     // Add to the new context
+	//     const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
+	//     addState(prev => {
+	//       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
+	//       return [...prev.slice(0, newIndex), activeItem, ...prev.slice(newIndex)];
+	//     });
+	//   }
+	//   setDraggedItem(null);
+	// };
+
+const onDragEnd = (event) => {
+  const { active, over } = event;
+
+  if (!over) {
+    setDraggedItem(null);
+    return; // Exit if there is no drop target
   }
+
+  // Find the index of the section that the dragged item originally belonged to
+  const originIndex = sections.findIndex(section =>
+    section.exercises.some(ex => ex.id === active.id)
+  );
+
+  // Attempt to find the index of the section based on the drop target's ID
+  let destinationIndex = sections.findIndex(section =>
+    section.exercises.some(ex => ex.id === over.id)
+  );
+
+  // If no direct item match, check if dropped on a section without an item
+  if (destinationIndex === -1) {
+    // Look for a section element that matches the `over.id`
+    destinationIndex = sections.findIndex(section => section.id === over.id);
+
+    // If still not found, check if the drop was inside a section container
+    if (destinationIndex === -1) {
+      const overElement = document.getElementById(over.id);
+      const sectionElements = document.querySelectorAll('[data-section-id]');
+      sectionElements.forEach((sectionElement, idx) => {
+        if (sectionElement.contains(overElement)) {
+          destinationIndex = idx;
+        }
+      });
+    }
+  }
+
+  if (destinationIndex !== -1) {
+    // Prepare the item for addition to the destination section
+    const item = originIndex !== -1 ? {...sections[originIndex].exercises.find(ex => ex.id === active.id)} :
+      {
+        id: `${draggedItem.id}-${sections[destinationIndex].id}`, // Generate a unique ID for new items
+        name: draggedItem.name, // Assuming draggedItem holds the required information
+        sets: draggedItem.sets || 3,
+        work: draggedItem.work || '10 reps'
+      };
+
+    // Remove the item from its original section, if applicable
+    if (originIndex !== -1) {
+      sections[originIndex].exercises = sections[originIndex].exercises.filter(ex => ex.id !== active.id);
+    }
+
+  console.log("Determined destination index:", destinationIndex);
+
+
+    // Add the item to the destination section
+    sections[destinationIndex].exercises.push(item);
+
+    // Update the state immutably to trigger re-render
+    setSections(sections.map((section, idx) => {
+      if (idx === originIndex || idx === destinationIndex) {
+        return {...section, exercises: [...section.exercises]};
+      }
+      return section;
+    }));
+  }
+
   setDraggedItem(null);
 };
-
 
 
 	//logic from legacy template form
@@ -282,21 +388,7 @@ const TemplateForm =  ( {exercises} ) => {
 						<div className="max-w-[15rem]" key={exercise.id}>
    						<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
    					</div>
-						// <div className="max-w-[15rem]"
-						// 		 key={exercise.id}
-						// 		 onClick={() => setTemplateExercises([...templateExercises, {id: exercise.id, name: exercise.name}])}
-						// >
-						// 		<SmallExerciseCard exercise={exercise} />
-						// </div>
 					))}
-{/*				<p>pool</p>
-				<div className="max-w-[15rem]">
-				  {exercisesToRender.map(exercise => (
-				  	<div className="max-w-[200px] overflow-hidden">
-   						<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
-   					</div>
-				  ))}
-				</div>*/}
 					</div> 
 				</div>
 			  <div className="bg-green-100 border-l border-black/10">
@@ -306,27 +398,33 @@ const TemplateForm =  ( {exercises} ) => {
 			    <div className="h-[500px]cursor-pointer rounded-lg bg-white shadow">
 			      <div className="px-4 py-5 sm:p-6">
 			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)}></Input>
-	      <div className="bg-red-100 min-h-[300px] flex flex-col"> {/* Ensure this div expands to contain SortableContext */}
-				  <p>warm up</p>
-				  <SortableContext items={warmUpExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy} className="flex-1">
-				    {warmUpExercises.length > 0 ? (
-				      warmUpExercises.map((exercise) => (
-				        <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
-				      ))
-				    ) : (
-				      <div className="flex-1"> {/* This ensures the SortableContext has height when empty */}
-				        Drag Items Here
-				      </div>
-				    )}
-				  </SortableContext>
-				</div>
-
-	      <p>endurance</p>
-	      <SortableContext items={enduranceExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
+			      <div>
+			      	{sections.map((section, index) => (
+			          <div key={section.id} data-id={section.id}>
+			            <input
+			              type="text"
+			              value={section.name}
+			              onChange={(e) => handleRenameSection(section.id, e.target.value)}
+			              className="border p-1"
+			            />
+			            <button onClick={() => handleDeleteSection(section.id)}>Delete Section</button>
+			            <SortableContext items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
+			              {section.exercises.length > 0 ? (
+			                section.exercises.map(exercise => (
+			                  <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
+			                ))
+			              ) : (
+			                <div>Drag Items Here</div>
+			              )}
+			            </SortableContext>
+			          </div>
+			        ))}
+			      </div>
+{/*	      <SortableContext items={enduranceExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
 	        {enduranceExercises.map((exercise) => (
 	          <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
 	        ))}
-	      </SortableContext>
+	      </SortableContext>*/}
 			        <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl" onClick={handleTemplateSubmit}>new template</button>
 			      </div>
 			    </div>
@@ -343,12 +441,12 @@ const TemplateForm =  ( {exercises} ) => {
       />
       <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
 	      <strong>Current State:</strong>
-{/*	      <p>exercises to render</p>
-	      {exercisesToRender.map((exercise, index) => (
+	      <p>dynamic sections</p>
+	      {sections.map((section, index) => (
 	        <div key={index} className="mb-2">
-	          {JSON.stringify(exercise, null, 2)}
+	          {JSON.stringify(section, null, 2)}
 	        </div>
-	      ))}*/}
+	      ))}
 	      <p>warm up</p>
 	      {warmUpExercises.map((exercise, index) => (
 	        <div key={index} className="mb-2">
