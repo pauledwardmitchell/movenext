@@ -49,7 +49,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  };
 
 	  return (
-    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow">
+    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow mb-2">
       <div
         {...listeners}
         {...attributes}
@@ -59,9 +59,13 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
       </div>
       <div className="flex-1">
         <div className="font-bold text-lg mb-1">{exercise.name}</div>
-        <div className="text-sm">{exercise.work} | {section.restBetweenExercises} seconds</div>
+        <div className="text-sm">{exercise.work} | {section.restBetweenExercises} seconds rest</div>
       </div>
-      <button onClick={handleDeleteClick} className="ml-4 bg-blue-300 text-white p-1 rounded">delete</button>
+    	<button onClick={handleDeleteClick} className="text-black border border-black p-1 rounded-full hover:bg-red-300 hover:text-black transition duration-150">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
+        </svg>
+      </button>
     </div>
 	  );
 	}
@@ -81,25 +85,25 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  };
 
 	  const url = getCldVideoUrl({
-		  width: 200,
-		  height: 180,
-		  src: exercise.video,
-		})
+	    width: 200,
+	    height: 180,
+	    src: exercise.video,
+	  })
 
 	  return (
-	    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="flex items-center p-4 bg-gray-300 rounded shadow">
+	    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="flex items-center bg-white rounded-lg">
 	      <div className="flex-1">
 	        <img 
-          src={url}
-          alt={exercise.name}
-          className="w-full h-full object-cover object-center"
-        />
-       	{exercise.name}
+	          src={url}
+	          alt={exercise.name}
+	          className="w-full h-full object-cover object-center m-0 rounded-t-lg"
+	        />
+	        <div className="text-bold text-black text-sm p-2">{exercise.name}</div>
 	      </div>
-	      {/* Edit and delete buttons can be added here if needed */}
 	    </div>
 	  );
 	}
+
 
 	function SectionEditModal({ isOpen, onClose, section, onSave }) {
 	  const [name, setName] = useState(section.name);
@@ -398,10 +402,11 @@ const onDragEnd = (event) => {
 	return (
 	  <div className="grid md:grid-cols-[auto_450px] sm:grid-cols-1">
 	  	<DndContext id='template-context-id' sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
-		  	<div className="bg-red-100">
-			  	<input className="bg-gray-100 rounded border-2 border-purple-500" placeholder="start typing..."onChange={ (e) => setQuery(e.target.value)}></input>
-		      <button className="">Filter</button>
-					<div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3">
+		  	<div className="bg-gray-100">
+		  		<div className="m-7 w-90">
+			  	<Input label="Search for an exercise" size="lg" onChange={ (e) => setQuery(e.target.value)} className=""/>
+					</div>
+					<div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3 mx-7 mt-4">
 					{search(exercisesToRender).map((exercise) => (
 						<div className="max-w-[15rem]" key={exercise.id}>
    						<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
@@ -410,11 +415,11 @@ const onDragEnd = (event) => {
 					</div> 
 				</div>
 			  <div className="">
-			    <div className="h-[500px]cursor-pointer rounded-lg bg-gray-100 shadow">
-			    	<div className="px-4 py-4">
+			    <div className="h-[500px]cursor-pointer bg-gray-100 shadow">
+			    	<div className="px-4 pt-4 text-lg">
 							Create a Workout Program:
 		        </div>
-			      <div className="px-4 py-5 sm:p-6 space-y-4">
+			      <div className="px-4 py-4 sm:p-6 space-y-3">
 			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
 <div>
   {sections.map((section, index) => (
@@ -423,14 +428,14 @@ const onDragEnd = (event) => {
         <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800 flex-1">
           {section.name}
         </span>
-        <button onClick={() => handleDeleteSection(section.id)} className="text-red-500 border border-red-500 p-1 rounded-full hover:bg-red-500 hover:text-white transition duration-150">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6l-12 12" />
+        <button onClick={() => handleDeleteSection(section.id)} className="text-white border border-white p-1 rounded-full hover:bg-red-300 hover:text-white transition duration-150">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
           </svg>
         </button>
       </div>
       <div className="text-sm mb-2 text-white">
-        Superset | {section.sets} sets | {section.restBetweenSets} seconds rest
+        Superset | {section.sets} sets | {section.restBetweenSets} seconds rest after each set
       </div>
       <SortableContext items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
         {section.exercises.length > 0 ? (
@@ -448,7 +453,7 @@ const onDragEnd = (event) => {
   ))}
 </div>
 
-			        <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl mt-4" onClick={handleTemplateSubmit}>new template</button>
+	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>create workout</button>
 			      </div>
 			    </div>
 		      </div>
