@@ -28,11 +28,11 @@ const DashboardLayout = async ({ children }) => {
         <MenuLinks />
       </nav>
       
-      <div className="bg-blue-100">{children}</div>
+      <div className="bg-gray-100">{children}</div>
 
-      <footer className="bg-yellow-100 sm:col-span-2">
-        FOOTER
-      </footer>
+{/*      <footer className="bg-white sm:col-span-2">
+        hambisa.augustynfitness.com
+      </footer>*/}
     </main>
   )
 }

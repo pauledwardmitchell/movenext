@@ -1,6 +1,6 @@
 import { prisma } from "@/utils/db"
 
-import ExerciseCard from "@/components/ExerciseCard"
+import CollapsibleSection from "@/components/CollapsibleSection"
 import WorkoutAccordion from "@/components/WorkoutAccordion"
 
 const getAssignment = async (id) => {
@@ -33,10 +33,16 @@ const SingleWorkoutPage = async ( {params} ) => {
 	return (
 		<div>
 			<div>{assignment.name}</div>
-			{/*<WorkoutAccordion exercises={exercisesWithIndexForAccordion({exercises})} />*/}
+	      {sections.map((section, index) => (
+	        <div key={index} className="mb-2">
+	          {JSON.stringify(section, null, 2)}
+	        </div>
+	      ))}
+			<WorkoutAccordion sections={sections} />
 		</div>
 
 	)
 }
 
 export default SingleWorkoutPage
+
