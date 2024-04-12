@@ -49,7 +49,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  };
 
 	  return (
-	    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow">
+	    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow m-2">
 	      <div
 	        {...listeners}
 	        {...attributes}
@@ -341,9 +341,6 @@ const onDragEnd = (event) => {
       sections[originIndex].exercises = sections[originIndex].exercises.filter(ex => ex.id !== active.id);
     }
 
-  console.log("Determined destination index:", destinationIndex);
-
-
     // Add the item to the destination section
     sections[destinationIndex].exercises.push(item);
 
@@ -392,40 +389,38 @@ const onDragEnd = (event) => {
 					</div> 
 				</div>
 			  <div className="bg-green-100 border-l border-black/10">
-		          <div className="px-4">
-								New Template Form
-		          </div>
+
 			    <div className="h-[500px]cursor-pointer rounded-lg bg-white shadow">
-			      <div className="px-4 py-5 sm:p-6">
-			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)}></Input>
+			    	<div className="px-4 py-4">
+							Create a Workout Program:
+		        </div>
+			      <div className="px-4 py-5 sm:p-6 space-y-4">
+			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
 			      <div>
 			      	{sections.map((section, index) => (
-			          <div key={section.id} data-id={section.id}>
-			            <input
-			              type="text"
-			              value={section.name}
-			              onChange={(e) => handleRenameSection(section.id, e.target.value)}
-			              className="border p-1"
-			            />
-			            <button onClick={() => handleDeleteSection(section.id)}>Delete Section</button>
+			          <div key={section.id} data-id={section.id} className="p-1 border rounded-lg shadow-sm bg-gray-50 mb-2">
+			            <div flex items-center justify-between mb-4>
+				            <input
+				              type="text"
+				              value={section.name}
+				              onChange={(e) => handleRenameSection(section.id, e.target.value)}
+				              className="border p-1 rounded-lg flex-1 mr-2"
+				            />
+				            <button onClick={() => handleDeleteSection(section.id)}>Delete Section</button>
+			            </div>
 			            <SortableContext items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
 			              {section.exercises.length > 0 ? (
 			                section.exercises.map(exercise => (
 			                  <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
 			                ))
 			              ) : (
-			                <div>Drag Items Here</div>
+			                <div className="p-4 text-center text-gray-500">Drag Items Here</div>
 			              )}
 			            </SortableContext>
 			          </div>
 			        ))}
 			      </div>
-{/*	      <SortableContext items={enduranceExercises.map(exercise => exercise.id)} strategy={verticalListSortingStrategy}>
-	        {enduranceExercises.map((exercise) => (
-	          <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
-	        ))}
-	      </SortableContext>*/}
-			        <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl" onClick={handleTemplateSubmit}>new template</button>
+			        <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl mt-4" onClick={handleTemplateSubmit}>new template</button>
 			      </div>
 			    </div>
 		      </div>
