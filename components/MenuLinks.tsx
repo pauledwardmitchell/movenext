@@ -8,7 +8,8 @@ const adminLinks = [
   { name: 'All Exercises', href: '/allexercises' },
   { name: 'All Templates', href: '/alltemplates' },
   { name: 'My Patients', href: '/mypatients' },
-  { name: 'Upload Exercises', href: '/uploadexercises' }
+  { name: 'Upload Exercises', href: '/uploadexercises' },
+  { name: 'My Workouts', href: '/myworkouts' }
 ]
 
 const userLinks = [
@@ -30,10 +31,9 @@ const MenuLinks = async () => {
 
 	return (
         <div>
-          <span className="text-3xl">MOVE</span>
           <ul className="px-4">
             {links(user.role).map((link) => (
-              <li key={link.name} className="text-xl my-4">
+              <li key={link.name} className="text-l my-8 mx-4">
                 <Link href={link.href}>{link.name}</Link>
               </li>
             ))}

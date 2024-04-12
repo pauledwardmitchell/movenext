@@ -1,15 +1,13 @@
 "use client"
 
-import { useState } from 'react'
-
+import { useState } from 'react';
 import {
   Accordion,
   AccordionHeader,
   AccordionBody,
-} from "@material-tailwind/react"
+} from "@material-tailwind/react";
+import ExerciseCard from "@/components/ExerciseCard";
 
-import ExerciseCard from "@/components/ExerciseCard"
- 
 function Icon({ id, open }) {
   return (
     <svg
@@ -24,26 +22,47 @@ function Icon({ id, open }) {
     </svg>
   );
 }
- 
-const WorkoutAccordion = ( {exercises}) => {
-  const [open, setOpen] = useState(0);
- 
-  const handleOpen = (value) => setOpen(open === value ? 0 : value);
- 
+
+const WorkoutAccordion = ({ sections }) => {
+  const [openSection, setOpenSection] = useState(null);
+  const [openExercise, setOpenExercise] = useState(null);
+
+  const toggleSection = (sectionId) => {
+    setOpenSection(openSection === sectionId ? null : sectionId);
+    setOpenExercise(null);  // Reset exercise accordion when changing sections
+  };
+
+  const toggleExercise = (exerciseId) => {
+    setOpenExercise(openExercise === exerciseId ? null : exerciseId);
+  };
+
   return (
     <div>
-      {exercises.map(exercise => (
-      	<div key={exercise.id}>
-      	<Accordion open={open === exercise.accordionIndex} icon={<Icon id={exercise.accordionIndex} open={open} />}>
-          <AccordionHeader onClick={() => handleOpen(exercise.accordionIndex)}>{exercise.name} | {exercise.description}</AccordionHeader>
+      {sections.map((section) => (
+        <Accordion key={section.id} open={openSection === section.id}>
+          <AccordionHeader onClick={() => toggleSection(section.id)}>
+            <Icon id={section.id} open={openSection === section.id} />
+            {section.name} | {section.sets} sets | {section.exercises.length} exercises
+          </AccordionHeader>
           <AccordionBody>
-            <ExerciseCard key={exercise.id} exercise={exercise} />
+            {section.exercises.map((exercise) => (
+              <Accordion key={exercise.id} open={openExercise === exercise.id}>
+                <AccordionHeader onClick={() => toggleExercise(exercise.id)}>
+                  <div className="flex flex-col">
+                    <span className="pl-2">{exercise.name}</span>
+                    <span className="text-sm text-gray-600 pl-4">{exercise.work} | {section.restBetweenExercises} seconds rest</span>
+                  </div>
+                </AccordionHeader>
+                <AccordionBody>
+                  <ExerciseCard exercise={exercise} />
+                </AccordionBody>
+              </Accordion>
+            ))}
           </AccordionBody>
-        </Accordion>	
-        </div>
-	   ))}
+        </Accordion>
+      ))}
     </div>
   );
-}
+};
 
-export default WorkoutAccordion
+export default WorkoutAccordion;

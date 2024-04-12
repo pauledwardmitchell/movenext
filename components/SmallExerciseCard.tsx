@@ -1,6 +1,6 @@
 'use client'
 
-import { CldImage, getCldVideoUrl } from 'next-cloudinary'
+import { getCldVideoUrl } from 'next-cloudinary'
 
 import {
   Card,
