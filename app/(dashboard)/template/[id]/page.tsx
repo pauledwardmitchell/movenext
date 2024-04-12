@@ -36,10 +36,10 @@ const TemplatePage = async ( {params} ) => {
 	const userSelectOptions = await getUserSelectOptions()
 	return (<div>
 		    	<h2>{template.name}</h2>
-		        <ul>
+{/*		        <ul>
     		      {template.exercises.map(exercise => (
     			    <li key={exercise.id}>{exercise.name}</li>))}
-    		    </ul>
+    		    </ul>*/}
     		    <div>
     		      <div className="w-72">
     		        <UserSelect users={userSelectOptions} params={params} templateName={template.name} />
