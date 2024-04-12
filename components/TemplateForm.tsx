@@ -28,7 +28,7 @@ import { Input } from "@material-tailwind/react"
 
 import SmallExerciseCard from '@/components/SmallExerciseCard'
 
-  function SortableItem({ id, exercise, onEdit, onDelete }) {
+  function SortableItem({ id, exercise, section, onEdit, onDelete }) {
 	  const {
 	    attributes,
 	    listeners,
@@ -49,19 +49,20 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  };
 
 	  return (
-	    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow m-2">
-	      <div
-	        {...listeners}
-	        {...attributes}
-	        className="p-2 mr-2 bg-gray-400 rounded cursor-grab"
-	      >
-	        :::
-	      </div>
-	      <div className="flex-1">
-	        {exercise.name} - Sets: {exercise.sets}, Work: {exercise.work}
-	      </div>
-	      <button onClick={handleDeleteClick} className="ml-4 bg-blue-300 text-white p-1 rounded">delete</button>
-	    </div>
+    <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow">
+      <div
+        {...listeners}
+        {...attributes}
+        className="p-2 mr-2 bg-gray-400 rounded cursor-grab"
+      >
+        :::
+      </div>
+      <div className="flex-1">
+        <div className="font-bold text-lg mb-1">{exercise.name}</div>
+        <div className="text-sm">{exercise.work} | {section.restBetweenExercises} seconds</div>
+      </div>
+      <button onClick={handleDeleteClick} className="ml-4 bg-blue-300 text-white p-1 rounded">delete</button>
+    </div>
 	  );
 	}
 
@@ -99,6 +100,60 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	    </div>
 	  );
 	}
+
+	function SectionEditModal({ isOpen, onClose, section, onSave }) {
+	  const [name, setName] = useState(section.name);
+	  const [sets, setSets] = useState(section.sets);
+	  const [restBetweenExercises, setRestBetweenExercises] = useState(section.restBetweenExercises);
+	  const [restBetweenSets, setRestBetweenSets] = useState(section.restBetweenSets);
+	  const [restAfterSuperset, setRestAfterSuperset] = useState(section.restAfterSuperset);
+
+	  const handleSubmit = (e) => {
+	    e.preventDefault();
+	    onSave(section.id, {
+	      ...section,
+	      name,
+	      sets,
+	      restBetweenExercises,
+	      restBetweenSets,
+	      restAfterSuperset
+	    });
+	    onClose();
+	  };
+
+	  if (!isOpen) return null;
+
+	  return (
+	    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+	      <div className="bg-white p-4 rounded">
+	        <h2 className="text-lg">Edit Section</h2>
+	        <form onSubmit={handleSubmit}>
+	          <label htmlFor="name" className="block">Name:</label>
+	          <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} className="border p-1 w-full" />
+	          
+	          <label htmlFor="sets" className="block mt-2">Sets:</label>
+	          <input type="number" id="sets" value={sets} onChange={(e) => setSets(e.target.value)} className="border p-1 w-full" />
+
+	          <label htmlFor="restBetweenExercises" className="block mt-2">Rest Between Exercises (seconds):</label>
+	          <input type="number" id="restBetweenExercises" value={restBetweenExercises} onChange={(e) => setRestBetweenExercises(e.target.value)} className="border p-1 w-full" />
+
+	          <label htmlFor="restBetweenSets" className="block mt-2">Rest Between Sets (seconds):</label>
+	          <input type="number" id="restBetweenSets" value={restBetweenSets} onChange={(e) => setRestBetweenSets(e.target.value)} className="border p-1 w-full" />
+
+	          <label htmlFor="restAfterSuperset" className="block mt-2">Rest After Superset (seconds):</label>
+	          <input type="number" id="restAfterSuperset" value={restAfterSuperset} onChange={(e) => setRestAfterSuperset(e.target.value)} className="border p-1 w-full" />
+
+	          <div className="mt-2">
+	            <button type="submit" className="bg-blue-500 text-white p-1 rounded mr-2">Save</button>
+	            <button type="button" onClick={onClose} className="bg-gray-300 p-1 rounded">Cancel</button>
+	          </div>
+	        </form>
+	      </div>
+	    </div>
+	  );
+	}
+
+
 
 	function EditModal({ isOpen, onClose, exercise, onSave }) {
 	  if (!isOpen || !exercise) {
@@ -168,12 +223,26 @@ const TemplateForm =  ( {exercises} ) => {
   //dynamic sections logic
   // Initial state with five default sections
   const [sections, setSections] = useState([
-    { id: 'start', name: 'Start', exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'strength', name: 'Strength', exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'cardio', name: 'Cardio', exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'cooldown', name: 'Cooldown', exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'flexibility', name: 'Flexibility', exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section3', name: 'Cardio', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] },
   ]);
+
+  const [selectedSection, setSelectedSection] = useState(null);
+
+  const openSectionEditModal = (section) => {
+    setSelectedSection(section);
+  };
+
+  const closeSectionEditModal = () => {
+    setSelectedSection(null);
+  };
+
+	const saveSectionDetails = (sectionId, updatedSection) => {
+	  setSections(sections.map(section => section.id === sectionId ? updatedSection : section));
+	};
 
   const handleDeleteSection = (sectionId) => {
     setSections(sections.filter(section => section.id !== sectionId));
@@ -242,54 +311,6 @@ const TemplateForm =  ( {exercises} ) => {
 
 	  setDraggedItem(item);
 	};
-
-	// const onDragEnd = (event) => {
-	//   const { active, over } = event;
-
-	//   if (!over || active.id === over.id) return;
-
-	//   const activeContext = exercisesToRender.some(exercise => exercise.id === active.id) ? 'shared' : warmUpExercises.some(exercise => exercise.id === active.id) ? 'warmUpExercises' : 'enduranceExercises';
-	//   const overContext = warmUpExercises.some(exercise => exercise.id === over.id) ? 'warmUpExercises' : enduranceExercises.some(exercise => exercise.id === over.id) ? 'enduranceExercises' : 'shared';
-
-	//   // Moving from exercisesToRender to a sortable context without removing from exercisesToRender
-	//   if (activeContext === 'shared' && overContext !== 'shared') {
-	//     const activeItem = exercisesToRender.find(exercise => exercise.id === active.id);
-	//     // Create a new ID that combines the original ID with the new context
-	//     const newId = `${activeItem.id}-${overContext}`;
-	//     const newItem = { ...activeItem, id: newId };
-
-	//     const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-	//     addState(prev => {
-	//       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-	//       return [...prev.slice(0, newIndex), newItem, ...prev.slice(newIndex)];
-	//     });
-	//   } 
-	//   // Reordering within the same context
-	//   else if (overContext === activeContext) {
-	//     const setState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-	//     setState(prev => {
-	//       const oldIndex = prev.findIndex(exercise => exercise.id === active.id);
-	//       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-	//       return arrayMove(prev, oldIndex, newIndex);
-	//     });
-	//   } 
-	//   // Moving between sortable contexts
-	//   else if (activeContext !== 'shared' && overContext !== 'shared' && activeContext !== overContext) {
-	//     const activeItem = activeContext === 'warmUpExercises' ? warmUpExercises.find(exercise => exercise.id === active.id) : enduranceExercises.find(exercise => exercise.id === active.id);
-
-	//     // Remove from the original context
-	//     const removeState = activeContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-	//     removeState(prev => prev.filter(exercise => exercise.id !== active.id));
-
-	//     // Add to the new context
-	//     const addState = overContext === 'warmUpExercises' ? setWarmUpExercises : setEnduranceExercises;
-	//     addState(prev => {
-	//       const newIndex = prev.findIndex(exercise => exercise.id === over.id);
-	//       return [...prev.slice(0, newIndex), activeItem, ...prev.slice(newIndex)];
-	//     });
-	//   }
-	//   setDraggedItem(null);
-	// };
 
 const onDragEnd = (event) => {
   const { active, over } = event;
@@ -375,7 +396,7 @@ const onDragEnd = (event) => {
   }
 
 	return (
-	  <div className="grid md:grid-cols-[auto_350px] sm:grid-cols-1">
+	  <div className="grid md:grid-cols-[auto_450px] sm:grid-cols-1">
 	  	<DndContext id='template-context-id' sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
 		  	<div className="bg-red-100">
 			  	<input className="bg-gray-100 rounded border-2 border-purple-500" placeholder="start typing..."onChange={ (e) => setQuery(e.target.value)}></input>
@@ -388,38 +409,45 @@ const onDragEnd = (event) => {
 					))}
 					</div> 
 				</div>
-			  <div className="bg-green-100 border-l border-black/10">
-
-			    <div className="h-[500px]cursor-pointer rounded-lg bg-white shadow">
+			  <div className="">
+			    <div className="h-[500px]cursor-pointer rounded-lg bg-gray-100 shadow">
 			    	<div className="px-4 py-4">
 							Create a Workout Program:
 		        </div>
 			      <div className="px-4 py-5 sm:p-6 space-y-4">
 			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
-			      <div>
-			      	{sections.map((section, index) => (
-			          <div key={section.id} data-id={section.id} className="p-1 border rounded-lg shadow-sm bg-gray-50 mb-2">
-			            <div flex items-center justify-between mb-4>
-				            <input
-				              type="text"
-				              value={section.name}
-				              onChange={(e) => handleRenameSection(section.id, e.target.value)}
-				              className="border p-1 rounded-lg flex-1 mr-2"
-				            />
-				            <button onClick={() => handleDeleteSection(section.id)}>Delete Section</button>
-			            </div>
-			            <SortableContext items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
-			              {section.exercises.length > 0 ? (
-			                section.exercises.map(exercise => (
-			                  <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} onEdit={handleEdit} onDelete={deleteExercise} />
-			                ))
-			              ) : (
-			                <div className="p-4 text-center text-gray-500">Drag Items Here</div>
-			              )}
-			            </SortableContext>
-			          </div>
-			        ))}
-			      </div>
+<div>
+  {sections.map((section, index) => (
+    <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
+      <div className="flex justify-between items-center mb-4">
+        <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800 flex-1">
+          {section.name}
+        </span>
+        <button onClick={() => handleDeleteSection(section.id)} className="text-red-500 border border-red-500 p-1 rounded-full hover:bg-red-500 hover:text-white transition duration-150">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6l-12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="text-sm mb-2 text-white">
+        Superset | {section.sets} sets | {section.restBetweenSets} seconds rest
+      </div>
+      <SortableContext items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
+        {section.exercises.length > 0 ? (
+          section.exercises.map(exercise => (
+            <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} section={section} onEdit={handleEdit} onDelete={deleteExercise} />
+          ))
+        ) : (
+          <div className="p-4 text-center text-gray-500">Drag Items Here</div>
+        )}
+      </SortableContext>
+      <div className="text-sm text-white">
+        Rest after Superset: {section.restAfterSuperset} seconds
+      </div>
+    </div>
+  ))}
+</div>
+
 			        <button className="bg-blue-600 px-4 py-2 rounded-lg text-xl mt-4" onClick={handleTemplateSubmit}>new template</button>
 			      </div>
 			    </div>
@@ -434,6 +462,14 @@ const onDragEnd = (event) => {
         exercise={currentExercise}
         onSave={handleSave}
       />
+        {selectedSection && (
+          <SectionEditModal
+            isOpen={!!selectedSection}
+            onClose={closeSectionEditModal}
+            section={selectedSection}
+            onSave={saveSectionDetails}
+          />
+        )}
       <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
 	      <strong>Current State:</strong>
 	      <p>dynamic sections</p>
