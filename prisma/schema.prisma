@@ -50,6 +50,7 @@ model Template {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  sections  Json?
   exercises Exercise[]
 
   name       String       @unique

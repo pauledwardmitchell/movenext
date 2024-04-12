@@ -391,7 +391,7 @@ const onDragEnd = (event) => {
 
   const templateData = {
     name: templateName,
-    exercises: templateExercises
+    sections: sections
   }
 
   const handleTemplateSubmit = async () => {

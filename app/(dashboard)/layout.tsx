@@ -19,7 +19,7 @@ const DashboardLayout = async ({ children }) => {
         
       <header className="h-[60px] bg-gray-100 border-b border-black/10 sm:col-span-2">
         <div className="flex items-center justify-between h-full px-4">
-          <div className="text-xl font-bold">HAMBISA</div>
+          <div className="text-xl font-bold ml-4">HAMBISA</div>
           <UserButton afterSignOutUrl="/" />
         </div>
       </header>

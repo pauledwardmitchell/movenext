@@ -29,11 +29,11 @@ const exercisesWithIndexForAccordion = ( {exercises} ) => {
 
 const SingleWorkoutPage = async ( {params} ) => {
 	const assignment = await getAssignment(params.id)
-	const exercises = assignment.template.exercises
+	const sections = assignment.template.sections
 	return (
 		<div>
 			<div>{assignment.name}</div>
-			<WorkoutAccordion exercises={exercisesWithIndexForAccordion({exercises})} />
+			{/*<WorkoutAccordion exercises={exercisesWithIndexForAccordion({exercises})} />*/}
 		</div>
 
 	)
