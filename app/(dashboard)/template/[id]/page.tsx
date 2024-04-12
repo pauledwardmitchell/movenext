@@ -8,9 +8,6 @@ const getTemplate = async (id) => {
 		where: {
 			id,
 		},
-		include: {
-			exercises:{}
-		}
 	})	
 	return template
 }
