@@ -2,6 +2,7 @@ import { prisma } from "@/utils/db"
 import { getUserFromClerkID } from '@/utils/auth'
 import { UserButton } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
+import Link from 'next/link';
 
 import MyWorkoutsContent from "@/components/MyWorkoutsContent"
 
@@ -15,9 +16,6 @@ const getAssignments = async ( id ) => {
 	    },
 	    include: {
 	    	template: {
-	    		include: {
-	    			exercises: true
-	    		}
 	    	},
 	    }
 	})
@@ -43,7 +41,20 @@ return (
         </nav>
 
         {/* Main Content */}
-		<MyWorkoutsContent assignments={assignments} />
+		{/*<MyWorkoutsContent assignments={assignments} />*/}
+		<div className="my-6">
+      <h1 className="text-2xl font-bold text-gray-700 mb-4">Your Assignments</h1>
+      <ul>
+        {assignments.map((assignment) => (
+          <li key={assignment.id} className="mb-3">
+            {/* Assuming the template name is accessible via assignment.template.name */}
+            <Link href={`/assignment/${assignment.id}`}>
+              <span className="text-blue-600 hover:underline">{assignment.name}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
       </div>
     </div>
   )

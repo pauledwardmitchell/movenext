@@ -10,20 +10,10 @@ const getAssignment = async (id) => {
 	    },
 	    include: {
 	    	template: {
-	    		include: {
-	    			exercises: true
-	    		}
 	    	}
 	    }
 	})
 	return assignment
-}
-
-const exercisesWithIndexForAccordion = ( {exercises} ) => {
-	for (let i = 0; i < exercises.length; i++) {
-		exercises[i]["accordionIndex"] = i+1 
-	}
-	return	exercises
 }
 
 
@@ -33,11 +23,6 @@ const SingleWorkoutPage = async ( {params} ) => {
 	return (
 		<div>
 			<div>{assignment.name}</div>
-	      {sections.map((section, index) => (
-	        <div key={index} className="mb-2">
-	          {JSON.stringify(section, null, 2)}
-	        </div>
-	      ))}
 			<WorkoutAccordion sections={sections} />
 		</div>
 

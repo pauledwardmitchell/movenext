@@ -37,12 +37,9 @@ model Exercise {
 
   name        String @unique
   video       String @default("push-up-video")
-  image       String @default("push-up-image")
   description String @default("3 sets | 10 reps | 30 secs rest")
   sets        String @default("3")
   work        String @default("10 reps")
-
-  templates Template[]
 }
 
 model Template {
@@ -51,7 +48,6 @@ model Template {
   updatedAt DateTime @updatedAt
 
   sections  Json?
-  exercises Exercise[]
 
   name       String       @unique
   Assignment Assignment[]

@@ -294,11 +294,6 @@ const TemplateForm =  ( {exercises} ) => {
 	  // Look for the item in the exercises array
 	  let item = exercises.find(ex => ex.id === active.id);
 	  
-	  // If not found in exercises, look in enduranceExercises
-	  if (!item) {
-	    item = enduranceExercises.find(ex => ex.id === active.id);
-	  }
-
 	  // If still not found, look in sharedExercises
 	  if (!item) {
 	    item = exercisesToRender.find(ex => ex.id === active.id);
@@ -467,7 +462,7 @@ const onDragEnd = (event) => {
             onSave={saveSectionDetails}
           />
         )}
-      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
+{/*      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
 	      <strong>Current State:</strong>
 	      <p>dynamic sections</p>
 	      {sections.map((section, index) => (
@@ -475,7 +470,7 @@ const onDragEnd = (event) => {
 	          {JSON.stringify(section, null, 2)}
 	        </div>
 	      ))}
-	    </div>
+	    </div>*/}
     </div>
 	)
 }
