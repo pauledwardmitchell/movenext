@@ -204,12 +204,13 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  );
 	}
 
-const TemplateForm =  ( {exercises} ) => {
+
+const TemplateForm =  ( { exercises, initialTemplate } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
   const [programName, setProgramName] = useState("")
   const [templateExercises, setTemplateExercises] = useState([])
-  const [templateName, setTemplateName] = useState("")
+  const [templateName, setTemplateName] = useState(initialTemplate?.name || "");
 
 	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
@@ -217,12 +218,12 @@ const TemplateForm =  ( {exercises} ) => {
 
   //dynamic sections logic
   // Initial state with five default sections
-  const [sections, setSections] = useState([
+  const [sections, setSections] = useState(initialTemplate?.sections || [
     { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
     { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
     { id: 'section3', name: 'Cardio', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
     { id: 'section4', name: 'Cooldown', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] }
   ]);
 
   const [selectedSection, setSelectedSection] = useState(null);
@@ -471,6 +472,9 @@ const onDragEnd = (event) => {
 	        </div>
 	      ))}
 	    </div>*/}
+        <div>
+        {initialTemplate?.name}
+        </div>
     </div>
 	)
 }
