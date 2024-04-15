@@ -1,6 +1,7 @@
 import { prisma } from "@/utils/db"
 
 import UserSelect from "@/components/UserSelect"
+import WorkoutAccordion from "@/components/WorkoutAccordion"
 
 
 const getTemplate = async (id) => {
@@ -33,13 +34,11 @@ const getUserSelectOptions = async () => {
 
 const TemplatePage = async ( {params} ) => {
 	const template = await getTemplate(params.id)
+	const sections = template.sections
 	const userSelectOptions = await getUserSelectOptions()
 	return (<div>
 		    	<h2>{template.name}</h2>
-{/*		        <ul>
-    		      {template.exercises.map(exercise => (
-    			    <li key={exercise.id}>{exercise.name}</li>))}
-    		    </ul>*/}
+		    	<WorkoutAccordion sections={sections} />
     		    <div>
     		      <div className="w-72">
     		        <UserSelect users={userSelectOptions} params={params} templateName={template.name} />
