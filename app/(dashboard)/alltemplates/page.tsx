@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { prisma } from "@/utils/db";
 import TemplateCopyButton from '@/components/TemplateCopyButton'; // Import the client component
 
-export const getTemplates = async () => {
+const getTemplates = async () => {
   const templates = await prisma.template.findMany();
   return templates;
 };
