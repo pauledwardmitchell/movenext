@@ -8,6 +8,12 @@ const getExercises = async (searchParams) => {
 }
 
 const getTemplate = async (id) => {
+
+	if (!id) {
+	    // Return null or an empty object if no id is provided
+	    return null;
+	}
+
 	const template = await prisma.template.findUnique({
 		where: {
 			id,
