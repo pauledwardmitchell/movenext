@@ -11,7 +11,7 @@ const TemplateCopyButton = ({ templateId }) => {
 
   return (
     <button onClick={handleCopyTemplate} className="m-4 px-3 py-1 rounded bg-blue-500 text-white">
-      Copy Template to Program Builder
+      Copy
     </button>
   );
 };
