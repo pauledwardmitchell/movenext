@@ -255,7 +255,7 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
 
   const handleEdit = (exercise) => {
     setCurrentExercise(exercise);
-    setModalOpen(true);
+    // setModalOpen(true);
   };
 
 	const handleSave = (exerciseId, newWork) => {
@@ -367,6 +367,12 @@ const onDragEnd = (event) => {
     // Add the item to the destination section
     sections[destinationIndex].exercises.push(item);
 
+    //kick out placeholder
+	  const placeholderIndex = sections[destinationIndex].exercises.findIndex(ex => ex.name === "Placeholder");
+	    if (placeholderIndex !== -1 && draggedItem.name !== "Placeholder") {
+	      sections[destinationIndex].exercises.splice(placeholderIndex, 1);
+	    }
+
     // Update the state immutably to trigger re-render
     setSections(sections.map((section, idx) => {
       if (idx === originIndex || idx === destinationIndex) {
@@ -477,7 +483,7 @@ const onDragEnd = (event) => {
       <div className="text-sm mb-2 text-white">
         Superset | {section.sets} sets | {section.restBetweenSets} seconds rest after each set
       </div>
-      <SortableContext items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext className="min-h-full min-w-full bg-red-300" items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
         {section.exercises.length > 0 ? (
           section.exercises.map(exercise => (
             <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} section={section} onEdit={handleEdit} onDelete={deleteExercise} />
