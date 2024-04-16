@@ -64,7 +64,7 @@ model Assignment {
   templateId String
   template   Template @relation(fields: [templateId], references: [id])
 
-  name String @unique
+  name String
 
   @@index([userId, templateId])
 }
