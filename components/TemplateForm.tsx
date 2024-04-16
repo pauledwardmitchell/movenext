@@ -382,6 +382,23 @@ const onDragEnd = (event) => {
     sections: sections
   }
 
+  const moveSectionUp = (index) => {
+    if (index > 0) {
+      const newSections = [...sections];
+      [newSections[index], newSections[index - 1]] = [newSections[index - 1], newSections[index]];
+      setSections(newSections);
+    }
+  };
+
+  // Function to move a section down in the list
+  const moveSectionDown = (index) => {
+    if (index < sections.length - 1) {
+      const newSections = [...sections];
+      [newSections[index], newSections[index + 1]] = [newSections[index + 1], newSections[index]];
+      setSections(newSections);
+    }
+  };
+
   const addSection = () => {
     const newSection = {
       id: `section${sections.length + 1}`,  // Ensure unique ID
@@ -426,9 +443,21 @@ const onDragEnd = (event) => {
   {sections.map((section, index) => (
     <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
       <div className="flex justify-between items-center mb-4">
-        <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800 flex-1">
-          {section.name}
-        </span>
+              <div className="flex items-center flex-1">
+                <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800">
+                  {section.name}
+                </span>
+                <button onClick={() => moveSectionUp(index)} className="ml-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                  </svg>
+                </button>
+                <button onClick={() => moveSectionDown(index)} className="ml-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
         <button onClick={() => handleDeleteSection(section.id)} className="text-white border border-white p-1 rounded-full hover:bg-red-300 hover:text-white transition duration-150">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
