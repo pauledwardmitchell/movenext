@@ -209,7 +209,7 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
   const [programName, setProgramName] = useState("")
-  const [templateExercises, setTemplateExercises] = useState([])
+  // const [templateExercises, setTemplateExercises] = useState([])
   const [templateName, setTemplateName] = useState(initialTemplate?.name || "");
 
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -382,6 +382,19 @@ const onDragEnd = (event) => {
     sections: sections
   }
 
+  const addSection = () => {
+    const newSection = {
+      id: `section${sections.length + 1}`,  // Ensure unique ID
+      name: 'New Section',  // Default section name
+      sets: 3,
+      restBetweenExercises: 30,
+      restBetweenSets: 30,
+      restAfterSuperset: 30,
+      exercises: [{ id: `exercise${sections.length + 1}`, name: 'Placeholder', sets: 3, work: '10 reps' }]
+    };
+    setSections([...sections, newSection]);
+  };
+
   const handleTemplateSubmit = async () => {
     const { data } = await createNewTemplate( templateData )
     router.push(`/template/${data.id}`)
@@ -440,8 +453,9 @@ const onDragEnd = (event) => {
     </div>
   ))}
 </div>
+	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>Create Workout</button>
+				<button className="bg-white ml-2 px-4 py-2 rounded-lg text-[#606C82] border border-[#606C82] text-xl mt-4" onClick={addSection}>Add New Section</button>
 
-	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>create workout</button>
 			      </div>
 			    </div>
 		      </div>

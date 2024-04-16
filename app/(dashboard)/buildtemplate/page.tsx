@@ -32,9 +32,6 @@ const BuildTemplatePage = async ({searchParams}) => {
 				exercises={exercises} 
 				initialTemplate={template}
 			/>
-			<div className="mb-2">
-	          {JSON.stringify(template, null, 2)}
-	        </div>
 		</div>
 	)
 }
