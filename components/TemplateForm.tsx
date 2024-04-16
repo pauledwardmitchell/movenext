@@ -48,6 +48,12 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	    onDelete(exercise.id); // Call the delete function with the exercise id
 	  };
 
+	  // Handle opening the edit modal
+	  const handleEditClick = (e) => {
+	    e.stopPropagation();
+	    onEdit(exercise); // Pass the exercise to the edit handler
+	  };
+
 	  return (
     <div ref={setNodeRef} style={style} className="flex items-center p-4 bg-gray-300 rounded shadow mb-2">
       <div
@@ -58,7 +64,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
         :::
       </div>
       <div className="flex-1">
-        <div className="font-bold text-lg mb-1">{exercise.name}</div>
+        <div className="font-bold text-lg mb-1 cursor-pointer" onClick={handleEditClick}>{exercise.name}</div>
         <div className="text-sm">{exercise.work} | {section.restBetweenExercises} seconds rest</div>
       </div>
     	<button onClick={handleDeleteClick} className="text-black border border-black p-1 rounded-full hover:bg-red-300 hover:text-black transition duration-150">
@@ -103,7 +109,6 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	    </div>
 	  );
 	}
-
 
 	function SectionEditModal({ isOpen, onClose, section, onSave }) {
 	  const [name, setName] = useState(section.name);
@@ -157,53 +162,39 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  );
 	}
 
-
-
 	function EditModal({ isOpen, onClose, exercise, onSave }) {
-	  if (!isOpen || !exercise) {
-	    return null;
-	  }
+    	const [work, setWork] = useState(exercise.work);
 
-	  const [sets, setSets] = useState(exercise.sets);
-	  const [work, setWork] = useState(exercise.work);
+	    const handleSubmit = (e) => {
+	        e.preventDefault();
+	        onSave(exercise.id, work);
+	        onClose();
+	    };
 
-	  const handleSubmit = (e) => {
-	    e.preventDefault();
-	    onSave(exercise.id, sets, work);
-	    onClose();
-	  };
+	    if (!isOpen || !exercise) return null;
 
-	  return (
-	    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-	      <div className="bg-white p-4 rounded">
-	        <h2 className="text-lg">Edit Exercise</h2>
-	        <form onSubmit={handleSubmit}>
-	          <label htmlFor="sets" className="block">Sets:</label>
-	          <input
-	            type="number"
-	            id="sets"
-	            value={sets}
-	            onChange={(e) => setSets(Number(e.target.value))}
-	            className="border p-1 w-full"
-	          />
-	          <label htmlFor="work" className="block mt-2">Work (Reps):</label>
-	          <input
-	            type="text"
-	            id="work"
-	            value={work}
-	            onChange={(e) => setWork(e.target.value)}
-	            className="border p-1 w-full"
-	          />
-	          <div className="mt-2">
-	            <button type="submit" className="mr-2 bg-blue-500 text-white p-1 rounded">Save</button>
-	            <button type="button" onClick={onClose} className="bg-gray-300 p-1 rounded">Cancel</button>
-	          </div>
-	        </form>
-	      </div>
-	    </div>
-	  );
+	    return (
+	        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+	            <div className="bg-white p-4 rounded">
+	                <h2 className="text-lg">Edit Exercise</h2>
+	                <form onSubmit={handleSubmit}>
+	                    <label htmlFor="work" className="block mt-2">Work:</label>
+	                    <input
+	                        type="text"
+	                        id="work"
+	                        value={work}
+	                        onChange={(e) => setWork(e.target.value)}
+	                        className="border p-1 w-full"
+	                    />
+	                    <div className="mt-2">
+	                        <button type="submit" className="mr-2 bg-blue-500 text-white p-1 rounded">Save</button>
+	                        <button type="button" onClick={onClose} className="bg-gray-300 p-1 rounded">Cancel</button>
+	                    </div>
+	                </form>
+	            </div>
+	        </div>
+	    );
 	}
-
 
 const TemplateForm =  ( { exercises, initialTemplate } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
@@ -236,6 +227,10 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
     setSelectedSection(null);
   };
 
+  const closeEditModal = () => {
+  	setCurrentExercise(null)
+  }
+
 	const saveSectionDetails = (sectionId, updatedSection) => {
 	  setSections(sections.map(section => section.id === sectionId ? updatedSection : section));
 	};
@@ -250,6 +245,10 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
     ));
   };
 
+  const openExerciseEditModal = (exercise) => {
+  	setCurrentExercise(exercise)
+  }
+
   // dnd logic
 
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
@@ -259,11 +258,22 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
     setModalOpen(true);
   };
 
-  const handleSave = (id, newSets, newWork) => {
-    setExercises(exercises.map(ex =>
-      ex.id === id ? { ...ex, sets: newSets, work: newWork } : ex
-    ));
-  };
+	const handleSave = (exerciseId, newWork) => {
+	    setSections(currentSections => {
+	        return currentSections.map(section => {
+	            return {
+	                ...section,
+	                exercises: section.exercises.map(exercise => {
+	                    if (exercise.id === exerciseId) {
+	                        return { ...exercise, work: newWork };
+	                    }
+	                    return exercise;
+	                })
+	            };
+	        });
+	    });
+	};
+
 
 	const deleteExercise = (exerciseId) => {
 	  // Find which section contains the exercise to be deleted
@@ -492,12 +502,16 @@ const onDragEnd = (event) => {
 		  <DragOverlay>
 			  {draggedItem ? <SortableItem exercise={draggedItem} id={draggedItem.id} /> : null}
 			</DragOverlay>
-      <EditModal
-        isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        exercise={currentExercise}
-        onSave={handleSave}
-      />
+			
+			{currentExercise && (
+				<EditModal
+			    isOpen={!!currentExercise}
+			    onClose={closeEditModal}
+			    exercise={currentExercise}
+			    onSave={handleSave}
+				/>
+			)}
+
         {selectedSection && (
           <SectionEditModal
             isOpen={!!selectedSection}
