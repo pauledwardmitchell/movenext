@@ -27,7 +27,9 @@ const ExerciseList = ({ exercises }) => {
       <ul className="mt-4 grid grid-cols-2 gap-4">
         {filteredExercises.map((exercise) => (
           <li key={exercise.id}>
-            <Link href={`/exercise/${exercise.id}`}>{exercise.name}</Link>
+            <Link href={`/exercise/${exercise.id}`}>
+            	<span className="hover:underline">{exercise.name}</span>
+            </Link>
           </li>
         ))}
       </ul>
