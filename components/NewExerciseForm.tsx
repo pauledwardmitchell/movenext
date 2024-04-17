@@ -1,29 +1,28 @@
 "use client"
 
-import { useState } from "react"
-
-import { createNewExercise } from '@/utils/api'
-import { useRouter } from 'next/navigation'
+import { useState } from "react";
+import { createNewExercise } from '@/utils/api';
+import { useRouter } from 'next/navigation';
 
 const NewExerciseForm = () => {
-  const [name, setName] = useState("")
-  const [video, setVideo] = useState("-video")
-  const [image, setImage] = useState("-image")
-  const [description, setDescription] = useState("3 sets | 10 reps | 30 secs rest")
+  const [name, setName] = useState("");
+  const [video, setVideo] = useState("_video");
+  const [description, setDescription] = useState("");
+  const [work, setWork] = useState("10 reps"); // Added new state for 'work'
 
-  const router = useRouter()
+  const router = useRouter();
 
   const exerciseData = {
     name: name,
     video: video,
-    image: image,
-    description: description
-  }
+    description: description,
+    work: work
+  };
 
   const handleOnClick = async () => {
-    const { data } = await createNewExercise( exerciseData )
-    router.push(`/exercise/${data.id}`) //redirect location after submit
-  }
+    const { data } = await createNewExercise(exerciseData);
+    router.push(`/exercise/${data.id}`); // Redirect location after submit
+  };
 
   return (
     <form className="max-w-lg mx-auto my-10 p-6 bg-white rounded shadow">
@@ -41,8 +40,8 @@ const NewExerciseForm = () => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
-          <input value={image} onChange={(e) => setImage(e.target.value)} type="text" id="image" name="image" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+          <label htmlFor="work" className="block text-sm font-medium text-gray-700">Work</label>
+          <input value={work} onChange={(e) => setWork(e.target.value)} type="text" id="work" name="work" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div className="mb-4">
@@ -53,7 +52,7 @@ const NewExerciseForm = () => {
         <button onClick={handleOnClick} className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
       </div>
     </form>
-  )
-}
+  );
+};
 
-export default NewExerciseForm
+export default NewExerciseForm;

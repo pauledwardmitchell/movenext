@@ -44,7 +44,7 @@ return (
       </nav>
       
 	    <div className="p-10 bg-gray-100">
-	      <h1 className="text-3xl mb-8">Your Workouts</h1>
+	      <h1 className="text-3xl mb-8">My Workouts</h1>
 	      <ul className="mt-4 grid grid-cols-1 gap-4">
 	        {assignments.map((assignment) => (
 	          <li key={assignment.id} className="mb-3">
