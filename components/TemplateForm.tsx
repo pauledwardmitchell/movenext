@@ -315,6 +315,9 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
 
 const onDragEnd = (event) => {
   const { active, over } = event;
+  console.log("event: ", event)
+  console.log("active: ", active)
+  console.log("over: ", over)
 
   if (!over) {
     setDraggedItem(null);
@@ -325,61 +328,93 @@ const onDragEnd = (event) => {
   const originIndex = sections.findIndex(section =>
     section.exercises.some(ex => ex.id === active.id)
   );
+  console.log("originIndex: ", originIndex)
 
   // Attempt to find the index of the section based on the drop target's ID
   let destinationIndex = sections.findIndex(section =>
     section.exercises.some(ex => ex.id === over.id)
   );
+  console.log("destinationIndex: ", destinationIndex)
 
   // If no direct item match, check if dropped on a section without an item
   if (destinationIndex === -1) {
-    // Look for a section element that matches the `over.id`
-    destinationIndex = sections.findIndex(section => section.id === over.id);
-
-    // If still not found, check if the drop was inside a section container
-    if (destinationIndex === -1) {
-      const overElement = document.getElementById(over.id);
-      const sectionElements = document.querySelectorAll('[data-section-id]');
-      sectionElements.forEach((sectionElement, idx) => {
-        if (sectionElement.contains(overElement)) {
-          destinationIndex = idx;
-        }
-      });
-    }
+  	setDraggedItem(null);
+    return; // Exit if dropped outside of SortableContexts
   }
 
-  if (destinationIndex !== -1) {
-    // Prepare the item for addition to the destination section
-    const item = originIndex !== -1 ? {...sections[originIndex].exercises.find(ex => ex.id === active.id)} :
-      {
-        id: `${draggedItem.id}-${sections[destinationIndex].id}`, // Generate a unique ID for new items
-        name: draggedItem.name, // Assuming draggedItem holds the required information
+	if (destinationIndex !== -1) {
+    const newSections = [...sections];
+    let item;
+
+//this next statement sets the variable "item" based on where it comes from
+    if (originIndex === -1) {
+      // Handle new item dropped from outside the list
+      item = {
+        id: `${draggedItem.id}-${sections[destinationIndex].id}`,
+        name: draggedItem.name,
         video: draggedItem.video,
         sets: draggedItem.sets || 3,
         work: draggedItem.work || '10 reps'
       };
+      newSections[destinationIndex].exercises.push(item);
 
-    // Remove the item from its original section, if applicable
-    if (originIndex !== -1) {
-      sections[originIndex].exercises = sections[originIndex].exercises.filter(ex => ex.id !== active.id);
-    }
-
-    // Add the item to the destination section
-    sections[destinationIndex].exercises.push(item);
-
-    //kick out placeholder
-	  const placeholderIndex = sections[destinationIndex].exercises.findIndex(ex => ex.name === "Placeholder");
-	    if (placeholderIndex !== -1 && draggedItem.name !== "Placeholder") {
-	      sections[destinationIndex].exercises.splice(placeholderIndex, 1);
+    const placeholderIndex = newSections[destinationIndex].exercises.findIndex(ex => ex.name === "Placeholder");
+	    if (placeholderIndex !== -1 && item.name !== "Placeholder") {
+	      newSections[destinationIndex].exercises.splice(placeholderIndex, 1);
 	    }
 
-    // Update the state immutably to trigger re-render
-    setSections(sections.map((section, idx) => {
-      if (idx === originIndex || idx === destinationIndex) {
-        return {...section, exercises: [...section.exercises]};
-      }
-      return section;
-    }));
+    } else if ( originIndex !== destinationIndex ) {
+      // Handle item moved within or across sections
+      item = {...newSections[originIndex].exercises.find(ex => ex.id === active.id)};
+      console.log("item: ", item)
+
+			newSections[originIndex].exercises = newSections[originIndex].exercises.filter(ex => {
+			    console.log(`Checking if exercise ID (${ex.id}) is not the same as active ID (${active.id})`);
+			    return ex.id !== active.id;
+			});
+			
+			newSections[destinationIndex].exercises = [...newSections[destinationIndex].exercises, item];  //issue is here (adding it twice - why?)
+	
+      console.log(">>newSections[originIndex].exercises: ", newSections[originIndex].exercises )
+    } else if (originIndex === destinationIndex) {
+    	item = {...newSections[originIndex].exercises.find(ex => ex.id === active.id)};
+      console.log("item: ", item)
+      const originItems = newSections[originIndex].exercises;
+      console.log("originItems: ", originItems)
+      const oldIndex = originItems.findIndex(i => i.id === item.id);
+      console.log("oldIndex: ", oldIndex)
+      const newIndex = originItems.findIndex(i => i.id === over.id);
+      console.log("newIndex: ", newIndex)
+      newSections[originIndex].exercises = arrayMove(originItems, oldIndex, newIndex);
+      console.log("// newSections: ", newSections)
+    }
+
+    // // Add the item to the destination section
+    // newSections[destinationIndex].exercises.push(item);
+    // console.log("// newSections[destinationIndex].exercises: ", newSections[destinationIndex].exercises)
+
+    // Remove placeholders if necessary
+    // const placeholderIndex = newSections[destinationIndex].exercises.findIndex(ex => ex.name === "Placeholder");
+    // if (placeholderIndex !== -1 && item.name !== "Placeholder") {
+    //   newSections[destinationIndex].exercises.splice(placeholderIndex, 1);
+    // }
+    // console.log("> newSections[destinationIndex].exercises: ", newSections[destinationIndex].exercises)
+
+    // Reorder within the same section if necessary
+    // if (originIndex === destinationIndex) {
+    //   const originItems = newSections[originIndex].exercises;
+    //   console.log("originItems: ", originItems)
+    //   const oldIndex = originItems.findIndex(i => i.id === item.id);
+    //   console.log("oldIndex: ", oldIndex)
+    //   const newIndex = originItems.findIndex(i => i.id === over.id);
+    //   console.log("newIndex: ", newIndex)
+    //   newSections[originIndex].exercises = arrayMove(originItems, oldIndex, newIndex);
+    //   console.log("// newSections: ", newSections)
+    // }
+
+    // Update the state with the new sections array
+    setSections(newSections);
+    console.log("sections: ", sections)
   }
 
   setDraggedItem(null);
@@ -505,9 +540,9 @@ const onDragEnd = (event) => {
 			    </div>
 		      </div>
 		  </DndContext>
-		  <DragOverlay>
+{/*		  <DragOverlay>
 			  {draggedItem ? <SortableItem exercise={draggedItem} id={draggedItem.id} /> : null}
-			</DragOverlay>
+			</DragOverlay>*/}
 			
 			{currentExercise && (
 				<EditModal
@@ -526,7 +561,7 @@ const onDragEnd = (event) => {
             onSave={saveSectionDetails}
           />
         )}
-{/*      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
+      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
 	      <strong>Current State:</strong>
 	      <p>dynamic sections</p>
 	      {sections.map((section, index) => (
@@ -534,7 +569,7 @@ const onDragEnd = (event) => {
 	          {JSON.stringify(section, null, 2)}
 	        </div>
 	      ))}
-	    </div>*/}
+	    </div>
         <div>
         {initialTemplate?.name}
         </div>
