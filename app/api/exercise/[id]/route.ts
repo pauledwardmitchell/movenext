@@ -10,7 +10,8 @@ export const PATCH = async ( request: Request, {params} ) => {
 		data: {
 			name: data.name,
 			video: data.video,
-			description: data.description
+			description: data.description,
+			work: data.work
 		}
 	})
 
