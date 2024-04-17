@@ -21,8 +21,8 @@ const SingleWorkoutPage = async ( {params} ) => {
 	const assignment = await getAssignment(params.id)
 	const sections = assignment.template.sections
 	return (
-		<div>
-			<div>{assignment.name}</div>
+		<div className="p-10">
+			<h2 className="text-3xl mb-8">{assignment.name}</h2>
 			<WorkoutAccordion sections={sections} />
 		</div>
 

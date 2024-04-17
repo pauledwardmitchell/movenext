@@ -28,7 +28,9 @@ const TemplateList = ({ templates }) => {
       <ul className="grid grid-cols-2 gap-4">
         {filteredTemplates.map((template) => (
           <li key={template.id} className="break-words">
-            <Link href={`/template/${template.id}`}>{template.name}</Link>
+            <Link href={`/template/${template.id}`}>
+            	<span className="hover:underline">{template.name}</span>
+            </Link>
             <TemplateCopyButton templateId={template.id} />
           </li>
         ))}

@@ -4,6 +4,7 @@ import { UserButton } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
 import Link from 'next/link';
 
+import MenuLinks from "@/components/MenuLinks"
 import MyWorkoutsContent from "@/components/MyWorkoutsContent"
 
 const getAssignments = async ( id ) => {
@@ -28,35 +29,33 @@ const MyWorkoutsPage = async () => {
   const assignments = await getAssignments( user.id )
 
 return (
-    <div className="bg-blue-50 h-screen">
-      <div className="container mx-auto px-4">
-        {/* Top Navigation */}
-        <nav className="flex justify-between items-center py-6">        
-          <a href="/myworkouts" className="text-xl font-semibold text-blue-600">move<span className="font-light">augustynfitness</span></a>
-          <div className="space-x-4">
-	        {/*<div className="flex items-center justify-end h-full px-4">*/}
-	          <UserButton className="flex" afterSignOutUrl="/" />
-	        {/*</div>          */}
-	      </div>
-        </nav>
 
-        {/* Main Content */}
-		{/*<MyWorkoutsContent assignments={assignments} />*/}
-		<div className="my-6">
-      <h1 className="text-2xl font-bold text-gray-700 mb-4">Your Assignments</h1>
-      <ul>
-        {assignments.map((assignment) => (
-          <li key={assignment.id} className="mb-3">
-            {/* Assuming the template name is accessible via assignment.template.name */}
-            <Link href={`/assignment/${assignment.id}`}>
-              <span className="text-blue-600 hover:underline">{assignment.name}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-      </div>
-    </div>
+    <main className="grid w-screen h-screen grid-cols-1 sm:grid-cols-[1fr_6fr] sm:grid-rows-[60px_6fr_1fr]">
+        
+      <header className="h-[60px] bg-gray-100 border-b border-black/10 sm:col-span-2">
+        <div className="flex items-center justify-between h-full px-4">
+          <div className="text-xl font-bold ml-4">HAMBISA</div>
+          <UserButton afterSignOutUrl="/" />
+        </div>
+      </header>
+
+      <nav className="bg-gray-100 border-r border-black/10">
+        <MenuLinks />
+      </nav>
+      
+	    <div className="p-10 bg-gray-100">
+	      <h1 className="text-3xl mb-8">Your Workouts</h1>
+	      <ul className="mt-4 grid grid-cols-1 gap-4">
+	        {assignments.map((assignment) => (
+	          <li key={assignment.id} className="mb-3">
+	            <Link href={`/assignment/${assignment.id}`}>
+	              <span className="hover:underline">{assignment.name}</span>
+	            </Link>
+	          </li>
+	        ))}
+	      </ul>
+	    </div>
+    </main>
   )
 }
 
