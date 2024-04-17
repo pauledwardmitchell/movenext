@@ -199,16 +199,11 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 const TemplateForm =  ( { exercises, initialTemplate } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
-  const [programName, setProgramName] = useState("")
-  // const [templateExercises, setTemplateExercises] = useState([])
   const [templateName, setTemplateName] = useState(initialTemplate?.name || "");
 
-	const [isModalOpen, setModalOpen] = useState(false);
   const [currentExercise, setCurrentExercise] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
 
-  //dynamic sections logic
-  // Initial state with five default sections
   const [sections, setSections] = useState(initialTemplate?.sections || [
     { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
     { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
@@ -249,13 +244,10 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
   	setCurrentExercise(exercise)
   }
 
-  // dnd logic
-
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
   const handleEdit = (exercise) => {
     setCurrentExercise(exercise);
-    // setModalOpen(true);
   };
 
 	const handleSave = (exerciseId, newWork) => {
@@ -324,62 +316,62 @@ const onDragEnd = (event) => {
   // Find the index of the section that the dragged item originally belonged to
   const originIndex = sections.findIndex(section =>
     section.exercises.some(ex => ex.id === active.id)
-  );
+  )
 
   // Attempt to find the index of the section based on the drop target's ID
   let destinationIndex = sections.findIndex(section =>
     section.exercises.some(ex => ex.id === over.id)
-  );
+  )
 
-  // If no direct item match, check if dropped on a section without an item
   if (destinationIndex === -1) {
-    // Look for a section element that matches the `over.id`
-    destinationIndex = sections.findIndex(section => section.id === over.id);
-
-    // If still not found, check if the drop was inside a section container
-    if (destinationIndex === -1) {
-      const overElement = document.getElementById(over.id);
-      const sectionElements = document.querySelectorAll('[data-section-id]');
-      sectionElements.forEach((sectionElement, idx) => {
-        if (sectionElement.contains(overElement)) {
-          destinationIndex = idx;
-        }
-      });
-    }
+  	setDraggedItem(null);
+    return; // Exit if dropped outside of SortableContexts
   }
 
-  if (destinationIndex !== -1) {
-    // Prepare the item for addition to the destination section
-    const item = originIndex !== -1 ? {...sections[originIndex].exercises.find(ex => ex.id === active.id)} :
-      {
-        id: `${draggedItem.id}-${sections[destinationIndex].id}`, // Generate a unique ID for new items
-        name: draggedItem.name, // Assuming draggedItem holds the required information
+	if (destinationIndex !== -1) {
+    const newSections = [...sections];
+    let item;
+
+    if (originIndex === -1) {
+      // Handle new item dropped from outside the list
+      item = {
+        id: `${draggedItem.id}-${sections[destinationIndex].id}`,
+        name: draggedItem.name,
         video: draggedItem.video,
         sets: draggedItem.sets || 3,
         work: draggedItem.work || '10 reps'
       };
+      newSections[destinationIndex].exercises.push(item);
 
-    // Remove the item from its original section, if applicable
-    if (originIndex !== -1) {
-      sections[originIndex].exercises = sections[originIndex].exercises.filter(ex => ex.id !== active.id);
-    }
-
-    // Add the item to the destination section
-    sections[destinationIndex].exercises.push(item);
-
-    //kick out placeholder
-	  const placeholderIndex = sections[destinationIndex].exercises.findIndex(ex => ex.name === "Placeholder");
-	    if (placeholderIndex !== -1 && draggedItem.name !== "Placeholder") {
-	      sections[destinationIndex].exercises.splice(placeholderIndex, 1);
+    //Replace placeholder with the first exercise dropped in a given section
+    const placeholderIndex = newSections[destinationIndex].exercises.findIndex(ex => ex.name === "Placeholder");
+	    if (placeholderIndex !== -1 && item.name !== "Placeholder") {
+	      newSections[destinationIndex].exercises.splice(placeholderIndex, 1);
 	    }
 
-    // Update the state immutably to trigger re-render
-    setSections(sections.map((section, idx) => {
-      if (idx === originIndex || idx === destinationIndex) {
-        return {...section, exercises: [...section.exercises]};
-      }
-      return section;
-    }));
+    } else if ( originIndex !== destinationIndex ) {
+      // Handle item moved across sections
+      item = {...newSections[originIndex].exercises.find(ex => ex.id === active.id)};
+
+      // Take dragged item out of origin section
+			newSections[originIndex].exercises = newSections[originIndex].exercises.filter(ex => {
+			    return ex.id !== active.id;
+			});
+			
+			// Put dragged item in the section where it has been dropped
+			newSections[destinationIndex].exercises = [...newSections[destinationIndex].exercises, item];  //issue is here (adding it twice - why?)
+	
+    } else if (originIndex === destinationIndex) { 
+    	//rearranging exercises within the same SortableContext
+    	item = {...newSections[originIndex].exercises.find(ex => ex.id === active.id)};
+      const originItems = newSections[originIndex].exercises;
+      const oldIndex = originItems.findIndex(i => i.id === item.id);
+      const newIndex = originItems.findIndex(i => i.id === over.id);
+      newSections[originIndex].exercises = arrayMove(originItems, oldIndex, newIndex);
+    }
+
+    // Update the state with the new sections array
+    setSections(newSections);
   }
 
   setDraggedItem(null);
@@ -455,60 +447,56 @@ const onDragEnd = (event) => {
 		        </div>
 			      <div className="px-4 py-4 sm:p-6 space-y-3">
 			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
-<div>
-  {sections.map((section, index) => (
-    <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
-      <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center flex-1">
-                <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800">
-                  {section.name}
-                </span>
-                <button onClick={() => moveSectionUp(index)} className="ml-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                  </svg>
-                </button>
-                <button onClick={() => moveSectionDown(index)} className="ml-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
-        <button onClick={() => handleDeleteSection(section.id)} className="text-white border border-white p-1 rounded-full hover:bg-red-300 hover:text-white transition duration-150">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
-          </svg>
-        </button>
-      </div>
-      <div className="text-sm mb-2 text-white">
-        Superset | {section.sets} sets | {section.restBetweenSets} seconds rest after each set
-      </div>
-      <SortableContext className="min-h-full min-w-full bg-red-300" items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
-        {section.exercises.length > 0 ? (
-          section.exercises.map(exercise => (
-            <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} section={section} onEdit={handleEdit} onDelete={deleteExercise} />
-          ))
-        ) : (
-          <div className="p-4 text-center text-gray-500">Drag Items Here</div>
-        )}
-      </SortableContext>
-      <div className="text-sm text-white">
-        Rest after Superset: {section.restAfterSuperset} seconds
-      </div>
-    </div>
-  ))}
-</div>
+						<div>
+						  {sections.map((section, index) => (
+						    <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
+						      <div className="flex justify-between items-center mb-4">
+						              <div className="flex items-center flex-1">
+						                <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800">
+						                  {section.name}
+						                </span>
+						                <button onClick={() => moveSectionUp(index)} className="ml-2">
+						                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+						                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+						                  </svg>
+						                </button>
+						                <button onClick={() => moveSectionDown(index)} className="ml-2">
+						                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+						                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+						                  </svg>
+						                </button>
+						              </div>
+						        <button onClick={() => handleDeleteSection(section.id)} className="text-white border border-white p-1 rounded-full hover:bg-red-300 hover:text-white transition duration-150">
+						          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+						            <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
+						          </svg>
+						        </button>
+						      </div>
+						      <div className="text-sm mb-2 text-white">
+						        Superset | {section.sets} sets | {section.restBetweenSets} seconds rest after each set
+						      </div>
+						      <SortableContext className="min-h-full min-w-full bg-red-300" items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
+						        {section.exercises.length > 0 ? (
+						          section.exercises.map(exercise => (
+						            <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} section={section} onEdit={handleEdit} onDelete={deleteExercise} />
+						          ))
+						        ) : (
+						          <div className="p-4 text-center text-gray-500">Drag Items Here</div>
+						        )}
+						      </SortableContext>
+						      <div className="text-sm text-white">
+						        Rest after Superset: {section.restAfterSuperset} seconds
+						      </div>
+						    </div>
+						  ))}
+						</div>
 	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>Create Workout</button>
 				<button className="bg-white ml-2 px-4 py-2 rounded-lg text-[#606C82] border border-[#606C82] text-xl mt-4" onClick={addSection}>Add New Section</button>
 
 			      </div>
 			    </div>
 		      </div>
-		  </DndContext>
-		  <DragOverlay>
-			  {draggedItem ? <SortableItem exercise={draggedItem} id={draggedItem.id} /> : null}
-			</DragOverlay>
-			
+		  </DndContext>			
 			{currentExercise && (
 				<EditModal
 			    isOpen={!!currentExercise}
@@ -517,16 +505,15 @@ const onDragEnd = (event) => {
 			    onSave={handleSave}
 				/>
 			)}
-
-        {selectedSection && (
-          <SectionEditModal
-            isOpen={!!selectedSection}
-            onClose={closeSectionEditModal}
-            section={selectedSection}
-            onSave={saveSectionDetails}
-          />
-        )}
-{/*      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
+      {selectedSection && (
+        <SectionEditModal
+          isOpen={!!selectedSection}
+          onClose={closeSectionEditModal}
+          section={selectedSection}
+          onSave={saveSectionDetails}
+        />
+      )}
+      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
 	      <strong>Current State:</strong>
 	      <p>dynamic sections</p>
 	      {sections.map((section, index) => (
@@ -534,10 +521,7 @@ const onDragEnd = (event) => {
 	          {JSON.stringify(section, null, 2)}
 	        </div>
 	      ))}
-	    </div>*/}
-        <div>
-        {initialTemplate?.name}
-        </div>
+	    </div>
     </div>
 	)
 }
