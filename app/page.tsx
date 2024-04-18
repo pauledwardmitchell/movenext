@@ -9,29 +9,27 @@ export default async function Home() {
   let href = userId ? '/myworkouts' : '/sign-in'
 
   const url = getCldImageUrl({
-    width: 500,
-    height: 500,
-    src: 'garten'
+    width: 400,
+    height: 400,
+    src: 'running'
   })
 
   return (
     <div className="w-screen h-screen bg-black flex justify-center items-center text-white">
       <div className="w-full max-w-[600px] mx-auto">
-        <h1 className="text-6xl mb-4">Howzit, members!</h1>
-        <p className="text-2xl text-white/60 mb-4">
-          It's Springtime in Munich.
-        </p>
+        <h1 className="text-6xl mb-4">hambisa.</h1>
         <Image
-          width="500"
-          height="500"
+          width="400"
+          height="400"
           src={url}
           sizes="100vw"
-          alt="garten"
+          alt="running"
         />
+        <h1 className="text-6xl mb-4">let's move.</h1>
         <div>
           <Link href={href}>
             <button className="bg-blue-600 my-5 px-4 py-2 rounded-lg text-xl">
-              let's get moving
+              get started
             </button>
           </Link>
         </div>
