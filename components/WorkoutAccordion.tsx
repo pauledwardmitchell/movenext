@@ -7,6 +7,8 @@ import {
   AccordionBody,
 } from "@material-tailwind/react";
 import ExerciseCard from "@/components/ExerciseCard";
+import { CldVideoPlayer, getCldVideoUrl } from 'next-cloudinary'
+import 'next-cloudinary/dist/cld-video-player.css';
 
 function Icon({ id, open }) {
   return (
@@ -48,14 +50,18 @@ const WorkoutAccordion = ({ sections }) => {
             {section.exercises.map((exercise) => (
               <Accordion key={exercise.id} open={openExercise === exercise.id}>
                 <AccordionHeader onClick={() => toggleExercise(exercise.id)}>
-                  <div className="flex flex-col">
-                    <span className="pl-2">{exercise.name}</span>
-                    <span className="text-sm text-gray-600 pl-4">{exercise.work} | {section.restBetweenExercises} seconds rest</span>
+                  <div className="flex flex-row items-center w-full">
+                    <CldVideoPlayer
+                      width="50%" // Maintain 50% width for the video
+                      height="auto" // Auto height for aspect ratio
+                      src={exercise.video}
+                    />
+                    <div className="flex flex-col ml-2 flex-grow"> {/* flex-grow applied here */}
+                      <span className="text-lg flex-grow">{exercise.name}</span> {/* Optional: flex-grow if needed */}
+                      <span className="text-sm text-gray-600 flex-grow">{exercise.work} | {section.restBetweenExercises} seconds rest</span>
+                    </div>
                   </div>
                 </AccordionHeader>
-                <AccordionBody>
-                  <ExerciseCard exercise={exercise} />
-                </AccordionBody>
               </Accordion>
             ))}
           </AccordionBody>
