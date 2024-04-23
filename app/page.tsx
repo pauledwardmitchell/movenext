@@ -11,11 +11,11 @@ export default async function Home() {
   const url = getCldImageUrl({
     width: 400,
     height: 400,
-    src: 'running'
+    src: 'augustyn_fitness_logo_hurdler'
   })
 
   return (
-    <div className="w-screen h-screen bg-black flex justify-center items-center text-white">
+    <div className="w-screen h-screen bg-white flex justify-center items-center text-black">
       <div className="w-full max-w-[600px] mx-auto">
         <h1 className="text-6xl mb-4">hambisa.</h1>
         <Image
@@ -23,12 +23,12 @@ export default async function Home() {
           height="400"
           src={url}
           sizes="100vw"
-          alt="running"
+          alt="augustyn_fitness_logo"
         />
         <h1 className="text-6xl mb-4">let's move.</h1>
         <div>
           <Link href={href}>
-            <button className="bg-blue-600 my-5 px-4 py-2 rounded-lg text-xl">
+            <button className="bg-blue-800 my-5 px-4 py-2 rounded-lg text-xl text-white">
               get started
             </button>
           </Link>
