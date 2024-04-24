@@ -30,6 +30,36 @@ export const createNewTemplate = async ( data ) => {
   }
 }
 
+export const updateTemplate = async ( id, templateData ) => {
+  const res = await fetch(
+    new Request(createURL(`/api/template/${id}`), {
+      method: 'PATCH',
+      body: JSON.stringify(templateData),
+    })
+  )
+
+  if (res.ok) {
+    return res.json()
+  } else {
+    throw new Error('Something went wrong on API server!')
+  }
+}
+
+export const deleteTemplate = async (id) => {
+  const res = await fetch(
+    new Request(createURL(`/api/template/${id}`), {
+      method: 'DELETE',
+    })
+  );
+
+  if (res.ok) {
+    return res.json();  // Optionally process the response, depends on API
+  } else {
+    throw new Error('Failed to delete the template.');
+  }
+}
+
+
 export const createNewExercise = async ( exerciseData ) => {
   const res = await fetch(
     new Request(createURL('/api/exercise'), {

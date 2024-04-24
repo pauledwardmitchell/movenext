@@ -12,7 +12,7 @@ const AllTemplatesPage = async () => {
   return (
     <div className="p-10 bg-zinc-400/10">
       <h2 className="text-3xl mb-8">All Templates</h2>
-      <TemplateList templates={templates} />
+      <TemplateList initialTemplates={templates} />
     </div>
   );
 };
