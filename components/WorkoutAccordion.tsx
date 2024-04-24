@@ -58,7 +58,7 @@ const WorkoutAccordion = ({ sections }) => {
                     />
                     <div className="flex flex-col ml-2 flex-grow"> {/* flex-grow applied here */}
                       <span className="text-lg flex-grow">{exercise.name}</span> {/* Optional: flex-grow if needed */}
-                      <span className="text-sm text-gray-600 flex-grow">{exercise.work} | {section.restBetweenExercises} seconds rest</span>
+                      <span className="text-sm text-gray-600 flex-grow">{exercise.work}</span>
                     </div>
                   </div>
                 </AccordionHeader>

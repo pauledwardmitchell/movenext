@@ -65,7 +65,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
       </div>
       <div className="flex-1">
         <div className="font-bold text-lg mb-1 cursor-pointer" onClick={handleEditClick}>{exercise.name}</div>
-        <div className="text-sm">{exercise.work} | {section.restBetweenExercises} seconds rest</div>
+        <div className="text-sm">{exercise.work}</div>
       </div>
     	<button onClick={handleDeleteClick} className="text-black border border-black p-1 rounded-full hover:bg-red-300 hover:text-black transition duration-150">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
@@ -113,7 +113,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	function SectionEditModal({ isOpen, onClose, section, onSave }) {
 	  const [name, setName] = useState(section.name);
 	  const [sets, setSets] = useState(section.sets);
-	  const [restBetweenExercises, setRestBetweenExercises] = useState(section.restBetweenExercises);
+	  // const [restBeweenExercises] = useState(section.restBetweenExercises);
 	  const [restBetweenSets, setRestBetweenSets] = useState(section.restBetweenSets);
 	  const [restAfterSuperset, setRestAfterSuperset] = useState(section.restAfterSuperset);
 
@@ -123,7 +123,6 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	      ...section,
 	      name,
 	      sets,
-	      restBetweenExercises,
 	      restBetweenSets,
 	      restAfterSuperset
 	    });
@@ -142,10 +141,10 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	          
 	          <label htmlFor="sets" className="block mt-2">Sets:</label>
 	          <input type="number" id="sets" value={sets} onChange={(e) => setSets(e.target.value)} className="border p-1 w-full" />
-
+{/*
 	          <label htmlFor="restBetweenExercises" className="block mt-2">Rest Between Exercises (seconds):</label>
 	          <input type="number" id="restBetweenExercises" value={restBetweenExercises} onChange={(e) => setRestBetweenExercises(e.target.value)} className="border p-1 w-full" />
-
+*/}
 	          <label htmlFor="restBetweenSets" className="block mt-2">Rest Between Sets (seconds):</label>
 	          <input type="number" id="restBetweenSets" value={restBetweenSets} onChange={(e) => setRestBetweenSets(e.target.value)} className="border p-1 w-full" />
 
@@ -205,11 +204,11 @@ const TemplateForm =  ( { exercises, initialTemplate } ) => {
   const [draggedItem, setDraggedItem] = useState(null);
 
   const [sections, setSections] = useState(initialTemplate?.sections || [
-    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section3', name: 'Cardio', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] }
+    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section2', name: 'Strength', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section3', name: 'Cardio', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] }
   ]);
 
   const [selectedSection, setSelectedSection] = useState(null);
@@ -412,7 +411,6 @@ const onDragEnd = (event) => {
       id: `section${sections.length + 1}`,  // Ensure unique ID
       name: 'New Section',  // Default section name
       sets: 3,
-      restBetweenExercises: 30,
       restBetweenSets: 30,
       restAfterSuperset: 30,
       exercises: [{ id: `exercise${sections.length + 1}`, name: 'Placeholder', sets: 3, work: '10 reps' }]
