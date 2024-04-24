@@ -1,4 +1,3 @@
-import { getUserFromClerkID } from '@/utils/auth'
 import { prisma } from "@/utils/db"
 import Link from "next/link"
 
@@ -10,12 +9,6 @@ const getUsers = async () => {
 
 const MyPatientsPage = async () => {
 	const users = await getUsers()
-
-	  const user = await getUserFromClerkID()
-  if (user.role !== 'ADMIN') {
-    redirect('/myworkouts')
-    return null
-  }
 
 	return (
 	<div>

@@ -1,4 +1,3 @@
-import { getUserFromClerkID } from '@/utils/auth'
 import { prisma } from "@/utils/db"
 
 import UserSelect from "@/components/UserSelect"
@@ -37,14 +36,6 @@ const TemplatePage = async ( {params} ) => {
 	const template = await getTemplate(params.id)
 	const sections = template.sections
 	const userSelectOptions = await getUserSelectOptions()
-
-  const user = await getUserFromClerkID()
-  if (user.role !== 'ADMIN') {
-    redirect('/myworkouts')
-    return null
-  }
-
-	
 	return (<div>
 		    	<h2>{template.name}</h2>
 		    	<WorkoutAccordion sections={sections} />

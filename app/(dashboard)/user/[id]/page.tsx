@@ -1,4 +1,3 @@
-import { getUserFromClerkID } from '@/utils/auth'
 import { prisma } from "@/utils/db"
 
 import Link from 'next/link'
@@ -37,12 +36,6 @@ const userAssignments = ( user ) => {
 
 const UserPage = async ( {params} ) => {
 	const user = await getUser(params.id)
-
-	  const userForAuth = await getUserFromClerkID()
-  if (userForAuth.role !== 'ADMIN') {
-    redirect('/myworkouts')
-    return null
-  }
 	return (
 		<div className="w-full h-full">
 			<div>{user.email}</div>
