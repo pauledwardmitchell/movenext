@@ -7,12 +7,12 @@ import MenuLinks from "@/components/MenuLinks"
 
 const DashboardLayout = async ({ children }) => {
 
-  const user = await getUserFromClerkID()
+  // const user = await getUserFromClerkID()
 
-  if (user.role !== 'ADMIN') {
-    redirect('/myworkouts')
-    return null
-  }
+  // if (user.role !== 'ADMIN') {
+  //   redirect('/myworkouts')
+  //   return null
+  // }
 
   return (
     <main className="grid w-screen h-screen grid-cols-1 sm:grid-cols-[1fr_6fr] sm:grid-rows-[60px_6fr_1fr]">
