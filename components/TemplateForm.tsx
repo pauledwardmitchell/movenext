@@ -113,7 +113,6 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	function SectionEditModal({ isOpen, onClose, section, onSave }) {
 	  const [name, setName] = useState(section.name);
 	  const [sets, setSets] = useState(section.sets);
-	  // const [restBeweenExercises] = useState(section.restBetweenExercises);
 	  const [restBetweenSets, setRestBetweenSets] = useState(section.restBetweenSets);
 	  const [restAfterSuperset, setRestAfterSuperset] = useState(section.restAfterSuperset);
 
@@ -141,10 +140,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	          
 	          <label htmlFor="sets" className="block mt-2">Sets:</label>
 	          <input type="number" id="sets" value={sets} onChange={(e) => setSets(e.target.value)} className="border p-1 w-full" />
-{/*
-	          <label htmlFor="restBetweenExercises" className="block mt-2">Rest Between Exercises (seconds):</label>
-	          <input type="number" id="restBetweenExercises" value={restBetweenExercises} onChange={(e) => setRestBetweenExercises(e.target.value)} className="border p-1 w-full" />
-*/}
+
 	          <label htmlFor="restBetweenSets" className="block mt-2">Rest Between Sets (seconds):</label>
 	          <input type="number" id="restBetweenSets" value={restBetweenSets} onChange={(e) => setRestBetweenSets(e.target.value)} className="border p-1 w-full" />
 
