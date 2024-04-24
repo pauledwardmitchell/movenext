@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link';
 
 import MenuLinks from "@/components/MenuLinks"
-import MyWorkoutsContent from "@/components/MyWorkoutsContent"
 
 const getAssignments = async ( id ) => {
 	const assignments = await prisma.assignment.findMany({

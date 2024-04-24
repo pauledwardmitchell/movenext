@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { createNewTemplate } from '@/utils/api'
+import { createNewTemplate, updateTemplate } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 
 import {
@@ -191,10 +191,17 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	    );
 	}
 
-const TemplateForm =  ( { exercises, initialTemplate } ) => {
+const TemplateForm =  ( { exercises, initialTemplate, editTemplate } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
-  const [templateName, setTemplateName] = useState(initialTemplate?.name || "");
+  const [templateName, setTemplateName] = useState(() => {
+    if (editTemplate && initialTemplate) {
+      return initialTemplate.name;
+    } else if (!editTemplate && initialTemplate) {
+      return `Copy of ${initialTemplate.name}`;
+    }
+    return "";
+  })
 
   const [currentExercise, setCurrentExercise] = useState(null);
   const [draggedItem, setDraggedItem] = useState(null);
@@ -415,16 +422,21 @@ const onDragEnd = (event) => {
   };
 
   const handleTemplateSubmit = async () => {
-    const { data } = await createNewTemplate( templateData )
-    router.push(`/template/${data.id}`)
-  }
+    if (editTemplate) {
+      const { data } = await updateTemplate(templateId, templateData);
+      router.push(`/template/${data.id}`);
+    } else {
+      const { data } = await createNewTemplate( templateData );
+      router.push(`/template/${data.id}`);
+    }
+  };
 
 	return (
 	  <div className="grid md:grid-cols-[auto_450px] sm:grid-cols-1">
 	  	<DndContext id='template-context-id' sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
 		  	<div className="bg-gray-100">
 		  		<div className="m-7 w-90">
-			  	<Input label="Search for an exercise" size="lg" onChange={ (e) => setQuery(e.target.value)} className=""/>
+			  		<Input label="Search for an exercise" size="lg" onChange={ (e) => setQuery(e.target.value)} className=""/>
 					</div>
 					<div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3 mx-7 mt-4">
 					{search(exercisesToRender).map((exercise) => (
@@ -440,7 +452,7 @@ const onDragEnd = (event) => {
 							Create a Workout Program:
 		        </div>
 			      <div className="px-4 py-4 sm:p-6 space-y-3">
-			      <Input label="Template Name" onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
+			      <Input label="Template Name" value={templateName} onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
 						<div>
 						  {sections.map((section, index) => (
 						    <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
@@ -484,7 +496,9 @@ const onDragEnd = (event) => {
 						    </div>
 						  ))}
 						</div>
-	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>Create Workout</button>
+	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>
+          {editTemplate ? 'Edit Workout' : 'Create Workout'}
+        </button>
 				<button className="bg-white ml-2 px-4 py-2 rounded-lg text-[#606C82] border border-[#606C82] text-xl mt-4" onClick={addSection}>Add New Section</button>
 
 			      </div>
