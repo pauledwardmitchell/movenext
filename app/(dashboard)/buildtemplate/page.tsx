@@ -32,6 +32,7 @@ const BuildTemplatePage = async ({searchParams}) => {
 				exercises={exercises} 
 				initialTemplate={template}
 				editTemplate={searchParams.formType==="edit"}
+				templateId={searchParams.templateId}
 			/>
 		</div>
 	)

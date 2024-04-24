@@ -191,7 +191,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	    );
 	}
 
-const TemplateForm =  ( { exercises, initialTemplate, editTemplate } ) => {
+const TemplateForm =  ( { exercises, initialTemplate, editTemplate, templateId } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
   const [query, setQuery] = useState("")
   const [templateName, setTemplateName] = useState(() => {
