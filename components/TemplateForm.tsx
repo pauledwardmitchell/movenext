@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { createNewTemplate, updateTemplate } from '@/utils/api'
 import { useRouter } from 'next/navigation'
 
@@ -216,15 +216,6 @@ const TemplateForm =  ( { exercises, initialTemplate, editTemplate } ) => {
 
   const [selectedSection, setSelectedSection] = useState(null);
 
-  // useEffect(() => {
-  // 	console.log("useEffect is running")
-  // 	console.log("editTemplate: ", editTemplate)
-  // 	console.log("initialTemplate: ", initialTemplate)
-  //   if (editTemplate && initialTemplate) {
-  //     setTemplateName(initialTemplate.name);
-  //   }
-  // }, [editTemplate, initialTemplate]);
-
   const openSectionEditModal = (section) => {
     setSelectedSection(section);
   };
@@ -429,11 +420,6 @@ const onDragEnd = (event) => {
     };
     setSections([...sections, newSection]);
   };
-
-  // const handleTemplateSubmit = async () => {
-  //   const { data } = await createNewTemplate( templateData )
-  //   router.push(`/template/${data.id}`)
-  // }
 
   const handleTemplateSubmit = async () => {
     if (editTemplate) {
