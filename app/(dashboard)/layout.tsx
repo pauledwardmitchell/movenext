@@ -8,7 +8,6 @@ import MenuLinks from "@/components/MenuLinks"
 const DashboardLayout = async ({ children }) => {
 
   // const user = await getUserFromClerkID()
-
   // if (user.role !== 'ADMIN') {
   //   redirect('/myworkouts')
   //   return null
