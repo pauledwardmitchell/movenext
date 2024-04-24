@@ -37,8 +37,9 @@ const userAssignments = ( user ) => {
 
 const UserPage = async ( {params} ) => {
 	const user = await getUser(params.id)
-	  const user = await getUserFromClerkID()
-  if (user.role !== 'ADMIN') {
+
+	  const userForAuth = await getUserFromClerkID()
+  if (userForAuth.role !== 'ADMIN') {
     redirect('/myworkouts')
     return null
   }
