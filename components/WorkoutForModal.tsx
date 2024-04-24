@@ -20,12 +20,12 @@ import WorkoutAccordion from "@/components/WorkoutAccordion"
 // 	return assignment
 // }
 
-const exercisesWithIndexForAccordion = ( {exercises} ) => {
-	for (let i = 0; i < exercises.length; i++) {
-		exercises[i]["accordionIndex"] = i+1 
-	}
-	return	exercises
-}
+// const exercisesWithIndexForAccordion = ( {exercises} ) => {
+// 	for (let i = 0; i < exercises.length; i++) {
+// 		exercises[i]["accordionIndex"] = i+1 
+// 	}
+// 	return	exercises
+// }
 
 
 const WorkoutForModal = ( {assignment} ) => {

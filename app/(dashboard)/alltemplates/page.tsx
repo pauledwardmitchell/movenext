@@ -1,3 +1,4 @@
+import { getUserFromClerkID } from '@/utils/auth'
 import { prisma } from "@/utils/db";
 import TemplateList from '@/components/TemplateList'; 
 
@@ -8,6 +9,12 @@ const getTemplates = async () => {
 
 const AllTemplatesPage = async () => {
   const templates = await getTemplates();
+
+    const user = await getUserFromClerkID()
+  if (user.role !== 'ADMIN') {
+    redirect('/myworkouts')
+    return null
+  }
 
   return (
     <div className="p-10 bg-zinc-400/10">

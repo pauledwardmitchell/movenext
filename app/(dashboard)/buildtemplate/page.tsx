@@ -1,5 +1,6 @@
 import { prisma } from "@/utils/db"
 import TemplateForm from "@/components/TemplateForm"
+import { getUserFromClerkID } from '@/utils/auth'
 
 
 const getExercises = async (searchParams) => {
@@ -25,6 +26,12 @@ const getTemplate = async (id) => {
 const BuildTemplatePage = async ({searchParams}) => {
 	const exercises = await getExercises(searchParams)
 	const template = await getTemplate(searchParams.templateId)
+
+	  const user = await getUserFromClerkID()
+  if (user.role !== 'ADMIN') {
+    redirect('/myworkouts')
+    return null
+  }
 
 	return (
 		<div className="">

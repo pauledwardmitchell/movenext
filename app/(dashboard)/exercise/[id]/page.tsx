@@ -1,3 +1,4 @@
+import { getUserFromClerkID } from '@/utils/auth'
 import { prisma } from "@/utils/db"
 import ExerciseCard from "@/components/ExerciseCard"
 import EditableExerciseCard from "@/components/EditableExerciseCard"
@@ -13,6 +14,13 @@ const getExercise = async (id) => {
 
 const ExercisePage = async ( {params} ) => {
 	const exercise = await getExercise(params.id)
+
+  const user = await getUserFromClerkID()
+  if (user.role !== 'ADMIN') {
+    redirect('/myworkouts')
+    return null
+  }
+	
 	return (
 		<div className="w-full h-full">
 			<EditableExerciseCard exercise={exercise} />
