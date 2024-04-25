@@ -59,7 +59,7 @@ const WorkoutAccordion = ({ sections }) => {
                         src={exercise.video}
                       />
                     </div>
-                    <div className="flex flex-col ml-2 flex-grow"> {/* flex-grow applied here */}
+                    <div className="flex flex-col ml-2 flex-grow w-2/5"> {/* flex-grow applied here */}
                       <span className="text-lg flex-grow">{exercise.name}</span> {/* Optional: flex-grow if needed */}
                       <span className="text-sm text-gray-600 flex-grow">{exercise.work}</span>
                     </div>
