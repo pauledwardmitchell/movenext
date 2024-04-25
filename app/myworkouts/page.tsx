@@ -1,3 +1,4 @@
+import { prisma } from "@/utils/db"
 import Image from 'next/image'
 import { getCldImageUrl } from 'next-cloudinary'
 import { getUserFromClerkID } from '@/utils/auth'
