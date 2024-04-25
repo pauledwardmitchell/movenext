@@ -1,13 +1,6 @@
-import { getUserFromClerkID } from '@/utils/auth'
 import NewExerciseForm from "@/components/NewExerciseForm"
 
-const NewExercisePage = async () => {
-
-	  const user = await getUserFromClerkID()
-  if (user.role !== 'ADMIN') {
-    redirect('/myworkouts')
-    return null
-  }
+const NewExercisePage =  () => {
 
 	return (
 	<div>
