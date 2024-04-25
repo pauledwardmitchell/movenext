@@ -14,10 +14,8 @@ const WorkoutModal = ({ assignment, onClose }) => {
                         &#x2715;
                     </button>
                 </div>
-                <div className="max-h-[80vh] overflow-y-auto"> {/* Set maximum height and overflow */}
-                  <WorkoutAccordion sections={assignment.template.sections} />
-                </div>
-                <button className="py-2 mt-4" onClick={onClose}>Close</button>
+                <WorkoutAccordion sections={assignment.template.sections} />
+                <button className="p-2 mt-4 border rounded border-black" onClick={onClose}>Close</button>
             </div>
         </div>
     )
