@@ -3,7 +3,7 @@ import WorkoutAccordion from "@/components/WorkoutAccordion"
 const WorkoutModal = ({ assignment, onClose }) => {
 	return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-5 rounded-lg">
+            <div className="bg-white p-5 rounded-2xl h-full">
                 <div className="flex items-center justify-between">
                     <h2 className="text-3xl mb-8">{assignment.name}</h2>
                     <button 
@@ -22,3 +22,5 @@ const WorkoutModal = ({ assignment, onClose }) => {
 };
 
 export default WorkoutModal
+
+
