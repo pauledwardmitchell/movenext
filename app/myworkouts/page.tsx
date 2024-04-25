@@ -29,19 +29,28 @@ const MyWorkoutsPage = async () => {
     const assignments = await getAssignments(user.id);
 
 		return (
-        <main className="grid w-screen h-screen grid-cols-1 sm:grid-cols-[1fr_6fr] sm:grid-rows-[60px_6fr_1fr]">
-            <header className="h-[60px] bg-gray-100 border-b border-black/10 sm:col-span-2">
-                <div className="flex items-center justify-between h-full px-4">
-                    <div className="text-xl font-bold ml-4">HAMBISA</div>
-                    <UserButton afterSignOutUrl="/" />
-                </div>
-            </header>
-            <nav className="bg-gray-100 border-r border-black/10">
-                <MenuLinks />
-            </nav>
-            <ClientWorkouts assignments={assignments} />
-        </main>
-    )
+	    <div className="flex flex-col h-screen bg-gray-100">
+	      <header className="h-16 bg-gray-100 border-b border-black/10">
+	        <div className="flex items-center justify-between h-15 px-4 py-4">
+	          <div className="text-xl font-bold">HAMBISA</div>
+	          <UserButton afterSignOutUrl="/" />
+	        </div>
+	      </header>
+	      {user.admin && (
+	        <nav className="bg-gray-100 border-r border-black/10 p-4">
+	          <MenuLinks />
+	        </nav>
+	      )}
+	      <div className="flex flex-1 overflow-hidden">
+	        {user.admin && (
+	          <aside className="w-60 min-w-min bg-gray-100 border-r border-black/10"> {/* Fixed width sidebar */}
+	            <MenuLinks />
+	          </aside>
+	        )}
+	        <ClientWorkouts assignments={assignments} className="flex-1 overflow-y-auto w-full" />
+	      </div>
+	    </div>
+	  )
 }
 
 export default MyWorkoutsPage

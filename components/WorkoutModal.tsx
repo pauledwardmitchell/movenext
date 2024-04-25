@@ -15,7 +15,7 @@ const WorkoutModal = ({ assignment, onClose }) => {
                     </button>
                 </div>
                 <WorkoutAccordion sections={assignment.template.sections} />
-                <button className="py-2 mt-4" onClick={onClose}>Close</button>
+                <button className="p-2 mt-4 border rounded border-black" onClick={onClose}>Close</button>
             </div>
         </div>
     )
