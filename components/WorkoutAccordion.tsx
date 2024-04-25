@@ -44,8 +44,10 @@ const WorkoutAccordion = ({ sections }) => {
         <Accordion key={section.id} open={openSection === section.id}>
           <AccordionHeader onClick={() => toggleSection(section.id)}>
             <Icon id={section.id} open={openSection === section.id} />
-            <span className="pl-3">{section.name}</span>
-            <span className="pl-3 text-sm text-gray-600 flex-grow">{section.sets} sets | {section.exercises.length} exercises</span>
+            <div className="flex flex-col ml-3 items-center"> {/* Modified here to stack span tags vertically */}
+              <span>{section.name}</span>
+              <span className="text-sm text-gray-600">{section.sets} sets | {section.exercises.length} exercises</span>
+            </div>
           </AccordionHeader>
           <AccordionBody>
             {section.exercises.map((exercise) => (
