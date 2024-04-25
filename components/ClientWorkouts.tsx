@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import WorkoutModal from './WorkoutModal';
+import WorkoutModal from '@/components/WorkoutModal';
 
 export default function ClientWorkouts({ assignments }) {
     const [isOpen, setIsOpen] = useState(false);
