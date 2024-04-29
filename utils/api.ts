@@ -89,3 +89,17 @@ export const updateExercise = async ( id, exerciseData ) => {
     throw new Error('Something went wrong on API server!')
   }
 }
+
+export const deleteExercise = async (id) => {
+  const res = await fetch(
+    new Request(createURL(`/api/exercise/${id}`), {
+      method: 'DELETE',
+    })
+  );
+
+  if (res.ok) {
+    return res.json();  // Optionally process the response, depends on API
+  } else {
+    throw new Error('Failed to delete the exercise.');
+  }
+}
