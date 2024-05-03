@@ -19,16 +19,16 @@ export default function ClientWorkouts({ assignments }) {
     };
 
     return (
-        <div className="p-10 bg-gray-100">
-            <h1 className="text-3xl mb-8">My Workouts</h1>
-            <ul className="mt-4 grid grid-cols-1 gap-4">
-                {assignments.map((assignment) => (
-                    <li key={assignment.id} className="mb-3">
-                        <a href="#" onClick={() => handleOpenModal(assignment)}>
-                            <span className="hover:underline">{assignment.name}</span>
-                        </a>
-                    </li>
-                ))}
+		<div className="p-10 bg-gray-100 flex flex-col overflow-y-auto h-full">
+		  <h1 className="text-3xl mb-8">My Workouts</h1>
+		  <ul className="mt-4 grid grid-cols-1 gap-4 overflow-y-auto">
+		    {assignments.map((assignment) => (
+		      <li key={assignment.id} className="mb-3">
+		        <a href="#" onClick={() => handleOpenModal(assignment)}>
+		          <span className="hover:underline">{assignment.name}</span>
+		        </a>
+		      </li>
+		    ))}	
             </ul>
             {isOpen && (
                 <WorkoutModal assignment={selectedAssignment} onClose={handleCloseModal} />
