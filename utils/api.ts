@@ -15,6 +15,20 @@ export const createNewAssignment = async ( userData ) => {
   }
 }
 
+export const deleteAssignment = async (id) => {
+  const res = await fetch(
+    new Request(createURL(`/api/assignment/${id}`), {
+      method: 'DELETE',
+    })
+  );
+
+  if (res.ok) {
+    return res.json();  // Optionally process the response, depends on API
+  } else {
+    throw new Error('Failed to delete the assignment.');
+  }
+}
+
 export const createNewTemplate = async ( data ) => {
   const res = await fetch(
     new Request(createURL('/api/template'), {
