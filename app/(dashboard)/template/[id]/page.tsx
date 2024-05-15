@@ -15,7 +15,11 @@ const getTemplate = async (id) => {
 
 //eventually this will have to be programmed to get patients for a given provider
 const getUserSelectOptions = async () => {
-	const users = await prisma.user.findMany()
+	const users = await prisma.user.findMany({
+	    orderBy: {
+	      lastName: 'asc',
+	    },
+	  })
 
 	var i
 	let userSelectOptions = []
