@@ -1,5 +1,5 @@
 import { prisma } from "@/utils/db"
-import Link from "next/link"
+import PatientSearch from "@/components/PatientSearch"
 
 //will have to fetch based on provider
 const getUsers = async () => {
@@ -10,22 +10,12 @@ const getUsers = async () => {
 const MyPatientsPage = async () => {
 	const users = await getUsers()
 
-	return (
-	<div>
-		<div className="p-10 bg-zinc-400/10">
-			<h2 className="text-3xl mb-8">my patients</h2>
-			<div className="">
-			<ul>
-			{users.map((user) => (
-				<li key={user.id}>
-					<Link href={`/user/${user.id}`}>{user.email}</Link>
-				</li>
-			))}
-			</ul>
-			</div> 
-		</div>
-	</div>
-	)
+	  return (
+	    <div className="p-10 bg-zinc-400/10">
+	      <h2 className="text-3xl mb-8">My Patients</h2>
+	      <PatientSearch initialUsers={users} /> 
+	    </div>
+	  )
 }
 
 export default MyPatientsPage
