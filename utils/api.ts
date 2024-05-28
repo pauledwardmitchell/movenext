@@ -117,3 +117,18 @@ export const deleteExercise = async (id) => {
     throw new Error('Failed to delete the exercise.');
   }
 }
+
+export const updateUser = async ( id, userData ) => {
+  const res = await fetch(
+    new Request(createURL(`/api/user/${id}`), {
+      method: 'PATCH',
+      body: JSON.stringify(userData),
+    })
+  )
+
+  if (res.ok) {
+    return res.json()
+  } else {
+    throw new Error('Something went wrong on API server!')
+  }
+}

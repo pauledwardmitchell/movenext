@@ -19,6 +19,7 @@ model User {
   email     String   @unique
   firstName String   @default("first")
   lastName  String   @default("last")
+  active    Boolean  @default(true)
 
   role UserRole @default(USER)
 
