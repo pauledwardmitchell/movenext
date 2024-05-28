@@ -1,12 +1,13 @@
 import { prisma } from "@/utils/db"
 import PatientSearch from "@/components/PatientSearch"
 
-//will have to fetch based on provider
+//will have to fetch based on provider, eventually
 const getUsers = async () => {
 	const users = await prisma.user.findMany({
-    orderBy: {
-      lastName: 'asc',
-    },
+	    orderBy: [
+	      { active: 'desc' }, // active users first
+	      { lastName: 'asc' },
+	    ],
   })
 	return users
 }
