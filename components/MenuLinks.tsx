@@ -33,7 +33,7 @@ const MenuLinks = async () => {
         <div>
           <ul className="px-4">
             {links(user.role).map((link) => (
-              <li key={link.name} className="text-l my-8 mx-4">
+              <li key={link.name} className="text-l my-3 mx-4">
                 <Link href={link.href}>{link.name}</Link>
               </li>
             ))}
