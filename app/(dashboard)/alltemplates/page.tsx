@@ -2,7 +2,11 @@ import { prisma } from "@/utils/db";
 import TemplateList from '@/components/TemplateList'; 
 
 const getTemplates = async () => {
-  const templates = await prisma.template.findMany();
+  const templates = await prisma.template.findMany({
+    orderBy: {
+      name: 'asc',
+    },
+  });
   return templates;
 };
 
