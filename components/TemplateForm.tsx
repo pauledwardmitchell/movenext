@@ -141,10 +141,10 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	          <label htmlFor="sets" className="block mt-2">Sets:</label>
 	          <input type="number" id="sets" value={sets} onChange={(e) => setSets(e.target.value)} className="border p-1 w-full" />
 
-	          <label htmlFor="restBetweenExercises" className="block mt-2">Rest Between Exercises (seconds / or type "as needed"):</label>
+	          <label htmlFor="restBetweenExercises" className="block mt-2">Rest Between Exercises (seconds / or "as needed"):</label>
 	          <input type="text" id="restBetweenExercises" value={restBetweenExercises} onChange={(e) => setRestBetweenExercises(e.target.value)} className="border p-1 w-full" />
 
-	          <label htmlFor="restAfterSuperset" className="block mt-2">Rest After Superset (seconds):</label>
+	          <label htmlFor="restAfterSuperset" className="block mt-2">Rest After Superset (seconds / or "as needed"):</label>
 	          <input type="text" id="restAfterSuperset" value={restAfterSuperset} onChange={(e) => setRestAfterSuperset(e.target.value)} className="border p-1 w-full" />
 
 	          <div className="mt-2">
@@ -157,39 +157,51 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	  );
 	}
 
-	function EditModal({ isOpen, onClose, exercise, onSave }) {
-    	const [work, setWork] = useState(exercise.work);
+function EditModal({ isOpen, onClose, exercise, onSave }) {
+  const [work, setWork] = useState(exercise.work);
+  const [oneRmCalculator, setOneRmCalculator] = useState(exercise.oneRmCalculator || false);
 
-	    const handleSubmit = (e) => {
-	        e.preventDefault();
-	        onSave(exercise.id, work);
-	        onClose();
-	    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(exercise.id, { work, oneRmCalculator });
+    onClose();
+  };
 
-	    if (!isOpen || !exercise) return null;
+  if (!isOpen || !exercise) return null;
 
-	    return (
-	        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-	            <div className="bg-white p-4 rounded">
-	                <h2 className="text-lg">Edit Exercise</h2>
-	                <form onSubmit={handleSubmit}>
-	                    <label htmlFor="work" className="block mt-2">Work:</label>
-	                    <input
-	                        type="text"
-	                        id="work"
-	                        value={work}
-	                        onChange={(e) => setWork(e.target.value)}
-	                        className="border p-1 w-full"
-	                    />
-	                    <div className="mt-2">
-	                        <button type="submit" className="mr-2 bg-blue-500 text-white p-1 rounded">Save</button>
-	                        <button type="button" onClick={onClose} className="bg-gray-300 p-1 rounded">Cancel</button>
-	                    </div>
-	                </form>
-	            </div>
-	        </div>
-	    );
-	}
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-4 rounded">
+        <h2 className="text-lg">Edit Exercise</h2>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="work" className="block mt-2">Work:</label>
+          <input
+            type="text"
+            id="work"
+            value={work}
+            onChange={(e) => setWork(e.target.value)}
+            className="border p-1 w-full"
+          />
+          
+          <label htmlFor="oneRmCalculator" className="block mt-2">1RM Calculator:</label>
+          <input
+            type="checkbox"
+            id="oneRmCalculator"
+            checked={oneRmCalculator}
+            onChange={(e) => setOneRmCalculator(e.target.checked)}
+            className="border p-1"
+          />
+
+          <div className="mt-2">
+            <button type="submit" className="mr-2 bg-blue-500 text-white p-1 rounded">Save</button>
+            <button type="button" onClick={onClose} className="bg-gray-300 p-1 rounded">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 
 const TemplateForm =  ( { exercises, initialTemplate, editTemplate, templateId } ) => {
   const [exercisesToRender, setExercisesToRender] = useState(exercises) 
@@ -207,11 +219,11 @@ const TemplateForm =  ( { exercises, initialTemplate, editTemplate, templateId }
   const [draggedItem, setDraggedItem] = useState(null);
 
   const [sections, setSections] = useState(initialTemplate?.sections || [
-    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section3', name: 'Cardio', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] }
+    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps', oneRmCalculator: false }] },
+    { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps', oneRmCalculator: false }] },
+    { id: 'section3', name: 'Cardio', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps', oneRmCalculator: false }] },
+    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps', oneRmCalculator: false }] },
+    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps', oneRmCalculator: false }] }
   ]);
 
   const [selectedSection, setSelectedSection] = useState(null);
@@ -252,22 +264,21 @@ const TemplateForm =  ( { exercises, initialTemplate, editTemplate, templateId }
     setCurrentExercise(exercise);
   };
 
-	const handleSave = (exerciseId, newWork) => {
-	    setSections(currentSections => {
-	        return currentSections.map(section => {
-	            return {
-	                ...section,
-	                exercises: section.exercises.map(exercise => {
-	                    if (exercise.id === exerciseId) {
-	                        return { ...exercise, work: newWork };
-	                    }
-	                    return exercise;
-	                })
-	            };
-	        });
+	const handleSave = (exerciseId, updatedExercise) => {
+	  setSections(currentSections => {
+	    return currentSections.map(section => {
+	      return {
+	        ...section,
+	        exercises: section.exercises.map(exercise => {
+	          if (exercise.id === exerciseId) {
+	            return { ...exercise, ...updatedExercise };
+	          }
+	          return exercise;
+	        })
+	      };
 	    });
+	  });
 	};
-
 
 	const deleteExercise = (exerciseId) => {
 	  // Find which section contains the exercise to be deleted
@@ -341,7 +352,8 @@ const onDragEnd = (event) => {
         name: draggedItem.name,
         video: draggedItem.video,
         sets: draggedItem.sets || 3,
-        work: draggedItem.work || '10 reps'
+        work: draggedItem.work || '10 reps',
+        oneRmCalculator: false
       };
       newSections[destinationIndex].exercises.push(item);
 
@@ -416,7 +428,7 @@ const onDragEnd = (event) => {
       sets: 3,
       restBetweenExercises: 30,
       restAfterSuperset: 30,
-      exercises: [{ id: `exercise${sections.length + 1}`, name: 'Placeholder', sets: 3, work: '10 reps' }]
+      exercises: [{ id: `exercise${sections.length + 1}`, name: 'Placeholder', sets: 3, work: '10 reps', oneRmCalculator: false }]
     };
     setSections([...sections, newSection]);
   };
