@@ -113,7 +113,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	function SectionEditModal({ isOpen, onClose, section, onSave }) {
 	  const [name, setName] = useState(section.name);
 	  const [sets, setSets] = useState(section.sets);
-	  const [restBetweenSets, setRestBetweenSets] = useState(section.restBetweenSets);
+	  const [restBetweenExercises, setRestBetweenExercises] = useState(section.restBetweenExercises);
 	  const [restAfterSuperset, setRestAfterSuperset] = useState(section.restAfterSuperset);
 
 	  const handleSubmit = (e) => {
@@ -122,7 +122,7 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	      ...section,
 	      name,
 	      sets,
-	      restBetweenSets,
+	      restBetweenExercises,
 	      restAfterSuperset
 	    });
 	    onClose();
@@ -141,11 +141,11 @@ import SmallExerciseCard from '@/components/SmallExerciseCard'
 	          <label htmlFor="sets" className="block mt-2">Sets:</label>
 	          <input type="number" id="sets" value={sets} onChange={(e) => setSets(e.target.value)} className="border p-1 w-full" />
 
-	          <label htmlFor="restBetweenSets" className="block mt-2">Rest Between Sets (seconds):</label>
-	          <input type="number" id="restBetweenSets" value={restBetweenSets} onChange={(e) => setRestBetweenSets(e.target.value)} className="border p-1 w-full" />
+	          <label htmlFor="restBetweenExercises" className="block mt-2">Rest Between Exercises (seconds / or type "as needed"):</label>
+	          <input type="text" id="restBetweenExercises" value={restBetweenExercises} onChange={(e) => setRestBetweenExercises(e.target.value)} className="border p-1 w-full" />
 
 	          <label htmlFor="restAfterSuperset" className="block mt-2">Rest After Superset (seconds):</label>
-	          <input type="number" id="restAfterSuperset" value={restAfterSuperset} onChange={(e) => setRestAfterSuperset(e.target.value)} className="border p-1 w-full" />
+	          <input type="text" id="restAfterSuperset" value={restAfterSuperset} onChange={(e) => setRestAfterSuperset(e.target.value)} className="border p-1 w-full" />
 
 	          <div className="mt-2">
 	            <button type="submit" className="bg-blue-500 text-white p-1 rounded mr-2">Save</button>
@@ -207,11 +207,11 @@ const TemplateForm =  ( { exercises, initialTemplate, editTemplate, templateId }
   const [draggedItem, setDraggedItem] = useState(null);
 
   const [sections, setSections] = useState(initialTemplate?.sections || [
-    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section2', name: 'Strength', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section3', name: 'Cardio', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
-    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenSets: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] }
+    { id: 'section1', name: 'Warm-Up', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e1', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section2', name: 'Strength', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e2', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section3', name: 'Cardio', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e3', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section4', name: 'Cooldown', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e4', name: 'Placeholder', sets: 3, work: '10 reps' }] },
+    { id: 'section5', name: 'Flexibility', sets: 3, restBetweenExercises: 30, restAfterSuperset: 30, exercises: [{ id: 'e5', name: 'Placeholder', sets: 3, work: '10 reps' }] }
   ]);
 
   const [selectedSection, setSelectedSection] = useState(null);
@@ -414,7 +414,7 @@ const onDragEnd = (event) => {
       id: `section${sections.length + 1}`,  // Ensure unique ID
       name: 'New Section',  // Default section name
       sets: 3,
-      restBetweenSets: 30,
+      restBetweenExercises: 30,
       restAfterSuperset: 30,
       exercises: [{ id: `exercise${sections.length + 1}`, name: 'Placeholder', sets: 3, work: '10 reps' }]
     };
@@ -479,7 +479,7 @@ const onDragEnd = (event) => {
 						        </button>
 						      </div>
 						      <div className="text-sm mb-2 text-white">
-						        Superset | {section.sets} sets | {section.restBetweenSets} seconds rest after each set
+						        Superset | {section.sets} sets
 						      </div>
 						      <SortableContext className="min-h-full min-w-full bg-red-300" items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
 						        {section.exercises.length > 0 ? (

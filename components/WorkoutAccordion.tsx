@@ -25,6 +25,20 @@ function Icon({ id, open }) {
   );
 }
 
+const formatRestTime = (rest) => {
+  if (/^\d+$/.test(rest)) { // Check if the rest value consists solely of digits
+    const restNumber = parseInt(rest, 10);
+    if (restNumber > 60) {
+      const minutes = Math.floor(restNumber / 60);
+      const seconds = restNumber % 60;
+      return seconds === 0 ? `${minutes} minutes` : `${minutes} min ${seconds} sec`;
+    } else {
+      return `${restNumber} seconds`;
+    }
+  }
+  return rest; // If it's not a number, return the text as is
+};
+
 const WorkoutAccordion = ({ sections }) => {
   const [openSection, setOpenSection] = useState(null);
   const [openExercise, setOpenExercise] = useState(null);
@@ -46,7 +60,7 @@ const WorkoutAccordion = ({ sections }) => {
             <Icon id={section.id} open={openSection === section.id} />
             <div className="flex flex-col ml-3 items-center"> {/* Modified here to stack span tags vertically */}
               <span>{section.name}</span>
-              <span className="text-sm text-gray-600">{section.sets} sets | {section.exercises.length} exercises</span>
+              <span className="text-sm text-gray-600">{section.sets} sets | {section.exercises.length} exercises | {formatRestTime(section.restAfterSuperset)} rest after SuperSet</span>
             </div>
           </AccordionHeader>
           <AccordionBody>
@@ -64,6 +78,9 @@ const WorkoutAccordion = ({ sections }) => {
                     <div className="flex flex-col ml-2 flex-grow w-2/5"> {/* flex-grow applied here */}
                       <span className="text-lg flex-grow">{exercise.name}</span> {/* Optional: flex-grow if needed */}
                       <span className="text-sm text-gray-600 flex-grow">{exercise.work}</span>
+                      <span className="text-sm text-gray-600 flex-grow">
+                        Rest: {formatRestTime(section.restBetweenExercises)}
+                      </span>
                     </div>
                   </div>
                 </AccordionHeader>
