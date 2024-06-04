@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Accordion,
   AccordionHeader,
@@ -42,6 +42,18 @@ const formatRestTime = (rest) => {
 const WorkoutAccordion = ({ sections }) => {
   const [openSection, setOpenSection] = useState(null);
   const [openExercise, setOpenExercise] = useState(null);
+  const [oneRmValues, setOneRmValues] = useState({});
+  const [showOneRmForm, setShowOneRmForm] = useState(false);
+  const [currentExercise, setCurrentExercise] = useState(null);
+  const [oneRm, setOneRm] = useState('');
+  const [percentWork, setPercentWork] = useState('');
+  const [unit, setUnit] = useState('kg');
+  const [calculatedWeight, setCalculatedWeight] = useState(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const toggleSection = (sectionId) => {
     setOpenSection(openSection === sectionId ? null : sectionId);
@@ -50,6 +62,32 @@ const WorkoutAccordion = ({ sections }) => {
 
   const toggleExercise = (exerciseId) => {
     setOpenExercise(openExercise === exerciseId ? null : exerciseId);
+  };
+
+  const handleCalculateOneRm = (exercise) => {
+    setCurrentExercise(exercise);
+    setShowOneRmForm(true);
+  };
+
+  const handleRecalculateOneRm = (exerciseId) => {
+    setCurrentExercise(exerciseId);
+    setShowOneRmForm(true);
+  };
+
+  const handleOneRmSubmit = (e) => {
+    e.preventDefault();
+    const weight = (oneRm * (percentWork / 100)).toFixed(2);
+    setCalculatedWeight(weight);
+    setOneRmValues(prevState => ({
+      ...prevState,
+      [currentExercise.id]: { weight, unit }
+    }));
+    setShowOneRmForm(false);
+  };
+
+  const handleCloseOneRmForm = () => {
+    setShowOneRmForm(false);
+    setCurrentExercise(null);
   };
 
   return (
@@ -79,8 +117,23 @@ const WorkoutAccordion = ({ sections }) => {
                       <span className="text-lg flex-grow">{exercise.name}</span> {/* Optional: flex-grow if needed */}
                       <span className="text-sm text-gray-600 flex-grow">{exercise.work}</span>
                       <span className="text-sm text-gray-600 flex-grow">
-                        Rest: {formatRestTime(section.restBetweenExercises)}
+                        rest: {formatRestTime(section.restBetweenExercises)}
                       </span>
+                      {isMounted && exercise.oneRmCalculator && (
+                        <>
+                          <div
+                            onClick={() => handleCalculateOneRm(exercise)}
+                            className="mt-2 text-sm text-black border border-black px-2 py-1 rounded cursor-pointer"
+                          >
+                            {oneRmValues[exercise.id] ? "Recalculate one rep max" : "Calculate one rep max"}
+                          </div>
+                          {oneRmValues[exercise.id] && (
+                            <div className="text-sm text-gray-600 mt-2">
+                              Your weight today: {oneRmValues[exercise.id].weight} {oneRmValues[exercise.id].unit}
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 </AccordionHeader>
@@ -89,6 +142,48 @@ const WorkoutAccordion = ({ sections }) => {
           </AccordionBody>
         </Accordion>
       ))}
+      {showOneRmForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-4 rounded">
+            <h2 className="text-lg">Calculate One Rep Max</h2>
+            <form onSubmit={handleOneRmSubmit}>
+              <label htmlFor="oneRm" className="block mt-2">1RM:</label>
+              <input
+                type="number"
+                id="oneRm"
+                value={oneRm}
+                onChange={(e) => setOneRm(e.target.value)}
+                className="border p-1 w-full"
+              />
+              <label htmlFor="percentWork" className="block mt-2">% Work:</label>
+              <input
+                type="number"
+                id="percentWork"
+                value={percentWork}
+                onChange={(e) => setPercentWork(e.target.value)}
+                className="border p-1 w-full"
+              />
+              <label htmlFor="unit" className="block mt-2">Unit:</label>
+              <select
+                id="unit"
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                className="border p-1 w-full"
+              >
+                <option value="kg">kg</option>
+                <option value="lbs">lbs</option>
+              </select>
+              <div className="mt-2 text-sm text-gray-600">
+                Your weight today: {oneRm && percentWork ? (oneRm * (percentWork / 100)).toFixed(2) : ''} {unit}
+              </div>
+              <div className="mt-2">
+                <button type="submit" className="mr-2 bg-blue-500 text-white p-1 rounded">Accept</button>
+                <button type="button" onClick={handleCloseOneRmForm} className="bg-gray-300 p-1 rounded">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
