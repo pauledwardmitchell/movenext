@@ -444,105 +444,98 @@ const onDragEnd = (event) => {
   };
 
 	return (
-	  <div className="grid md:grid-cols-[auto_450px] sm:grid-cols-1">
-	  	<DndContext id='template-context-id' sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
-		  	<div className="bg-gray-100">
-		  		<div className="m-7 w-90">
-			  		<Input label="Search for an exercise" size="lg" onChange={ (e) => setQuery(e.target.value)} className=""/>
-					</div>
-					<div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3 mx-7 mt-4">
-					{search(exercisesToRender).map((exercise) => (
-						<div className="max-w-[15rem]" key={exercise.id}>
-   						<DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
-   					</div>
-					))}
-					</div> 
-				</div>
-			  <div className="">
-			    <div className="h-[500px]cursor-pointer bg-gray-100 shadow">
-			    	<div className="px-4 pt-4 text-lg">
-							Create a Workout Program:
+		<div className="relative h-screen overflow-hidden">
+		  <div className="grid md:grid-cols-[auto_450px] sm:grid-cols-1 h-full overflow-hidden">
+		    <DndContext id='template-context-id' sensors={sensors} collisionDetection={closestCenter} onDragStart={onDragStart} onDragEnd={onDragEnd}>
+		      <div className="bg-gray-100 overflow-y-auto h-full"> {/* Make the left side scrollable */}
+		        <div className="m-7 w-90">
+		          <Input label="Search for an exercise" size="lg" onChange={ (e) => setQuery(e.target.value)} className=""/>
 		        </div>
-			      <div className="px-4 py-4 sm:p-6 space-y-3">
-			      <Input label="Template Name" value={templateName} onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
-						<div>
-						  {sections.map((section, index) => (
-						    <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
-						      <div className="flex justify-between items-center mb-4">
-						              <div className="flex items-center flex-1">
-						                <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800">
-						                  {section.name}
-						                </span>
-						                <button onClick={() => moveSectionUp(index)} className="ml-2">
-						                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-						                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-						                  </svg>
-						                </button>
-						                <button onClick={() => moveSectionDown(index)} className="ml-2">
-						                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
-						                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-						                  </svg>
-						                </button>
-						              </div>
-						        <button onClick={() => handleDeleteSection(section.id)} className="text-white border border-white p-1 rounded-full hover:bg-red-300 hover:text-white transition duration-150">
-						          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
-						            <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
-						          </svg>
-						        </button>
-						      </div>
-						      <div className="text-sm mb-2 text-white">
-						        Superset | {section.sets} sets
-						      </div>
-						      <SortableContext className="min-h-full min-w-full bg-red-300" items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
-						        {section.exercises.length > 0 ? (
-						          section.exercises.map(exercise => (
-						            <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} section={section} onEdit={handleEdit} onDelete={deleteExercise} />
-						          ))
-						        ) : (
-						          <div className="p-4 text-center text-gray-500">Drag Items Here</div>
-						        )}
-						      </SortableContext>
-						      <div className="text-sm text-white">
-						        Rest after Superset: {section.restAfterSuperset} seconds
-						      </div>
-						    </div>
-						  ))}
-						</div>
-	      <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>
-          {editTemplate ? 'Edit Workout' : 'Create Workout'}
-        </button>
-				<button className="bg-white ml-2 px-4 py-2 rounded-lg text-[#606C82] border border-[#606C82] text-xl mt-4" onClick={addSection}>Add New Section</button>
-
-			      </div>
-			    </div>
+		        <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-3 mx-7 mt-4">
+		          {search(exercisesToRender).map((exercise) => (
+		            <div className="max-w-[15rem]" key={exercise.id}>
+		              <DraggableItem key={exercise.id} id={exercise.id} exercise={exercise} />
+		            </div>
+		          ))}
+		        </div>
 		      </div>
-		  </DndContext>			
-			{currentExercise && (
-				<EditModal
-			    isOpen={!!currentExercise}
-			    onClose={closeEditModal}
-			    exercise={currentExercise}
-			    onSave={handleSave}
-				/>
-			)}
-      {selectedSection && (
-        <SectionEditModal
-          isOpen={!!selectedSection}
-          onClose={closeSectionEditModal}
-          section={selectedSection}
-          onSave={saveSectionDetails}
-        />
-      )}
-{/*      <div className="whitespace-pre-wrap bg-gray-100 p-4 mt-5">
-	      <strong>Current State:</strong>
-	      <p>dynamic sections</p>
-	      {sections.map((section, index) => (
-	        <div key={index} className="mb-2">
-	          {JSON.stringify(section, null, 2)}
-	        </div>
-	      ))}
-	    </div>*/}
-    </div>
+
+		      {/* Make the right side fixed */}
+		      <div className="fixed top-0 right-0 w-[450px] h-full bg-gray-100 overflow-y-auto">
+		        <div className="px-4 pt-4 text-lg">
+		          Create a Workout Program:
+		        </div>
+		        <div className="px-4 py-4 sm:p-6 space-y-3">
+		          <Input label="Template Name" value={templateName} onChange={ (e) => setTemplateName(e.target.value)} className="mb-4"></Input>
+		          <div>
+		            {sections.map((section, index) => (
+		              <div key={section.id} data-id={section.id} className="p-4 border rounded-lg shadow-sm bg-[#606C82] mb-2">
+		                <div className="flex justify-between items-center mb-4">
+		                  <div className="flex items-center flex-1">
+		                    <span onClick={() => openSectionEditModal(section)} className="cursor-pointer text-white font-bold hover:text-blue-800">
+		                      {section.name}
+		                    </span>
+		                    <button onClick={() => moveSectionUp(index)} className="ml-2">
+		                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+		                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+		                      </svg>
+		                    </button>
+		                    <button onClick={() => moveSectionDown(index)} className="ml-2">
+		                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
+		                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+		                      </svg>
+		                    </button>
+		                  </div>
+		                  <button onClick={() => handleDeleteSection(section.id)} className="text-white border border-white p-1 rounded-full hover:bg-red-300 hover:text-white transition duration-150">
+		                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+		                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6l-12 12" />
+		                    </svg>
+		                  </button>
+		                </div>
+		                <div className="text-sm mb-2 text-white">
+		                  Superset | {section.sets} sets
+		                </div>
+		                <SortableContext className="min-h-full min-w-full bg-red-300" items={section.exercises.map(ex => ex.id)} strategy={verticalListSortingStrategy}>
+		                  {section.exercises.length > 0 ? (
+		                    section.exercises.map(exercise => (
+		                      <SortableItem key={exercise.id} id={exercise.id} exercise={exercise} section={section} onEdit={handleEdit} onDelete={deleteExercise} />
+		                    ))
+		                  ) : (
+		                    <div className="p-4 text-center text-gray-500">Drag Items Here</div>
+		                  )}
+		                </SortableContext>
+		                <div className="text-sm text-white">
+		                  Rest after Superset: {section.restAfterSuperset} seconds
+		                </div>
+		              </div>
+		            ))}
+		          </div>
+		          <button className="bg-[#606C82] px-4 py-2 rounded-lg text-white text-xl mt-4" onClick={handleTemplateSubmit}>
+		            {editTemplate ? 'Edit Workout' : 'Create Workout'}
+		          </button>
+		          <button className="bg-white ml-2 px-4 py-2 rounded-lg text-[#606C82] border border-[#606C82] text-xl mt-4" onClick={addSection}>Add New Section</button>
+		        </div>
+		      </div>
+		    </DndContext>
+		    {currentExercise && (
+		      <EditModal
+		        isOpen={!!currentExercise}
+		        onClose={closeEditModal}
+		        exercise={currentExercise}
+		        onSave={handleSave}
+		      />
+		    )}
+		    {selectedSection && (
+		      <SectionEditModal
+		        isOpen={!!selectedSection}
+		        onClose={closeSectionEditModal}
+		        section={selectedSection}
+		        onSave={saveSectionDetails}
+		      />
+		    )}
+		  </div>
+		</div>
+
 	)
 }
 
